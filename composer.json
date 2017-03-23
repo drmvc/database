@@ -7,7 +7,7 @@
   "keywords": [
     "php",
     "drmvc",
-    "framework",
+    "plugin",
     "pdo",
     "mysql",
     "pgsql",
@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "DrMVC\\Plugins\\": "/Core/"
+      "DrMVC\\Plugins\\Database\\": "/Core/"
     }
   },
   "minimum-stability": "stable"

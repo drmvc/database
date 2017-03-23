@@ -1,5 +1,5 @@
 {
-  "name": "drmvc/plugin-database",
+  "name": "drmvc/database",
   "type": "project",
   "description": "Advanced plugin for work with database for DrMVC Framework",
   "homepage": "https://drmvc.com/",
@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "DrMVC\\Plugins\\Database\\": "/Core/"
+      "DrMVC\\Database\\": "/Core/"
     }
   },
   "minimum-stability": "stable"

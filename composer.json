@@ -1,0 +1,35 @@
+{
+  "name": "drmvc/plugin-database",
+  "type": "project",
+  "description": "Advanced plugin for work with database for DrMVC Framework",
+  "homepage": "https://drmvc.com/",
+  "license": "MIT",
+  "keywords": [
+    "php",
+    "drmvc",
+    "framework",
+    "pdo",
+    "mysql",
+    "pgsql",
+    "mongo",
+    "sqlite"
+  ],
+  "authors": [
+    {
+      "name": "Paul Rock",
+      "email": "paul@drteam.rocks",
+      "homepage": "https://drteam.rocks/",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^5.5 || ^7.0",
+    "drmvc/framework": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "DrMVC\\Plugins\\": "/Core/"
+    }
+  },
+  "minimum-stability": "stable"
+}

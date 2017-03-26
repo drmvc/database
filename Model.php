@@ -25,7 +25,7 @@ abstract class Model extends System_Model
      */
     public static function init($name, $db = null)
     {
-        $prefix = '\\Application\\Models\\';
+        $prefix = '\\DrMVC\\App\\Models\\';
         $model = $prefix . ucfirst(strtolower($name));
 
         // Filename for check

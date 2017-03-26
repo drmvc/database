@@ -1,15 +1,22 @@
-<?php namespace DrMVC\Plugins\Database\Core\Drivers;
+<?php namespace DrMVC\Database\Drivers;
 
 /**
  * Modern MongoDB php driver for mongo >=0.9.0
  * @package Modules\Database\Core\Drivers
  */
 
-use DrMVC\Plugins\Database\Core\Database;
+use DrMVC\Database\Database;
+
+use MongoDB\BSON\ObjectID as ObjectID;
+
 use MongoDB\Driver\Manager as MongoManager;
 use MongoDB\Driver\Command as MongoCommand;
 use MongoDB\Driver\Query as MongoQuery;
 use MongoDB\Driver\BulkWrite as BulkWrite;
+use MongoDB\Driver\WriteConcern as WriteConcern;
+
+use MongoDB\Driver\Exception\BulkWriteException as MongoBulkWriteException;
+use MongoDB\Driver\Exception\Exception as MongoException;
 
 class DMongoDB extends Database
 {
@@ -62,7 +69,7 @@ class DMongoDB extends Database
 
         switch ($command) {
             case 'insert':
-                $data['_id'] = new \MongoDB\BSON\ObjectID;
+                $data['_id'] = new ObjectID;
                 $bulk->insert($data);
                 break;
             case 'update';
@@ -74,10 +81,10 @@ class DMongoDB extends Database
         }
 
         try {
-            $writeConcern = new \MongoDB\Driver\WriteConcern(\MongoDB\Driver\WriteConcern::MAJORITY, 1000);
+            $writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
             $this->_connection->executeBulkWrite($config['database'] . '.' . $collection, $bulk, $writeConcern);
-            if ($command == 'insert') $response = (string) new \MongoDB\BSON\ObjectID($data['_id']); else $response = true;
-        } catch (\MongoDB\Driver\Exception\BulkWriteException $e) {
+            if ($command == 'insert') $response = (string) new ObjectID($data['_id']); else $response = true;
+        } catch (MongoBulkWriteException $e) {
             //print_r($e);die();
             echo $e->getMessage(), "\n";
             //exit;
@@ -109,7 +116,7 @@ class DMongoDB extends Database
         try {
             $cursor = $this->_connection->executeCommand($config['database'], $command);
             $response = $cursor->toArray();
-        } catch (\MongoDB\Driver\Exception\Exception $e) {
+        } catch (MongoException $e) {
             echo $e->getMessage(), "\n";
             exit;
         }
@@ -142,7 +149,7 @@ class DMongoDB extends Database
         try {
             $cursor = $this->_connection->executeQuery($config['database'] . '.' . $collection, $query);
             $response = $cursor->toArray();
-        } catch (\MongoDB\Driver\Exception\Exception $e) {
+        } catch (MongoException $e) {
             echo $e->getMessage(), "\n";
             exit;
         }

@@ -1,21 +1,16 @@
-<?php namespace DrMVC\Plugins\Database\Core\Drivers;
+<?php namespace DrMVC\Database\Drivers;
 
 /**
- * Extended PDO class for work with SQLite driver
+ * Class for work with PDO drivers
  * @package Modules\Database\Core\Drivers
  */
 
-use DrMVC\Plugins\Database\Core\Database;
+use DrMVC\Database\Database;
+
 use PDO;
 
-class DSqlite extends Database
+class DPdo extends Database
 {
-    /**
-     * DSqlite constructor
-     *
-     * @param string $name
-     * @param array $config
-     */
     public function __construct($name, array $config)
     {
         parent::__construct($name, $config);
@@ -24,7 +19,7 @@ class DSqlite extends Database
     }
 
     /**
-     * PDO sqlite have some difference with another PDO drivers
+     * Connect via PDO driver
      */
     public function connect()
     {
@@ -32,15 +27,20 @@ class DSqlite extends Database
 
         // Configurations
         $config = $this->_config;
+        // Force PDO to use exceptions for all errors
+        $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        // Connection string
+        $dsn = $config['driver'] . ":host=" . $config['hostname'] . ";port=" . $config['port'] . ";dbname=" . $config['database'];
 
-        $this->_connection = new PDO('sqlite:' . $config['file']);
+        //echo "$dsn, $config[username], $config[password]";
+        $this->_connection = new PDO($dsn, $config['username'], $config['password'], $options);
     }
 
     /**
      * Run a select statement against the database
      *
      * @param  string $query
-     * @param  array  $array parameter into named array
+     * @param  array $array parameter into named array
      * @return array
      */
     public function select($query, $array = array())
@@ -76,9 +76,10 @@ class DSqlite extends Database
      *
      * @param  string $table table name
      * @param  array $data array of columns and values
+     * @param  null $return_id id name if need return
      * @return string
      */
-    public function insert($table, $data)
+    public function insert($table, $data, $return_id = null)
     {
         ksort($data);
 
@@ -86,14 +87,49 @@ class DSqlite extends Database
         $fieldValues = ':' . implode(', :', array_keys($data));
 
         $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldValues)");
-        error_log("INSERT INTO $table ($fieldNames) VALUES ($fieldValues)", 0);
 
         foreach ($data as $key => $value) {
             $statement->bindValue(":$key", $value);
         }
 
-        $statement->execute();
-        return $this->_connection->lastInsertId();
+        try {
+            $this->_connection->beginTransaction();
+            $statement->execute();
+            $this->_connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->_connection->rollback();
+            return "Error!: " . $e->getMessage() . "</br>";
+        }
+    }
+
+    /**
+     * Get last inserted id from special table
+     *
+     * @param $table
+     * @param null $column
+     * @return array|bool
+     */
+    public function last_insert_id($table, $column = null)
+    {
+        // Configurations
+        $config = $this->_config;
+
+        switch ($config['driver']) {
+            case 'pgsql':
+                // The sequence object created by PostgreSQL is automatically named [table]_[column]_seq
+                $return = $this->_connection->lastInsertId("{$table}_{$column}_seq");
+                break;
+            case 'mysql':
+                // In MySQL we can use special function
+                $return = $this->select("SELECT LAST_INSERT_ID() as id FROM {$table} LIMIT 1;");
+                break;
+            default:
+                $return = false;
+                break;
+        }
+
+        return $return;
     }
 
     /**
@@ -106,6 +142,9 @@ class DSqlite extends Database
      */
     public function update($table, $data, $where)
     {
+        // Configurations
+        $config = $this->_config;
+
         ksort($data);
 
         $fieldDetails = null;
@@ -117,10 +156,15 @@ class DSqlite extends Database
         $whereDetails = null;
         $i = 0;
         foreach ($where as $key => $value) {
-            if ($i == 0) {
-                $whereDetails .= "$key = :where_$key";
-            } else {
-                $whereDetails .= " AND $key = :where_$key";
+            switch ($config['driver']) {
+                case 'mysql':
+                    if ($i == 0) $whereDetails .= "`$key` = :where_$key";
+                    else $whereDetails .= " AND `$key` = :where_$key";
+                    break;
+                default:
+                    if ($i == 0) $whereDetails .= "$key = :where_$key";
+                    else $whereDetails .= " AND $key = :where_$key";
+                    break;
             }
             $i++;
         }
@@ -141,7 +185,6 @@ class DSqlite extends Database
         $statement->execute();
         return $statement->rowCount();
     }
-
 
     /**
      * Delete rows from database

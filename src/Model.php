@@ -1,4 +1,4 @@
-<?php namespace DrMVC\Plugins\Database\Core;
+<?php namespace DrMVC\Database;
 
 /**
  * Database Model base class, this class like abstracted class, should be reassign via another driver class

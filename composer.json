@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "DrMVC\\Database\\": "/Core/"
+      "DrMVC\\Database\\": "/src/"
     }
   },
   "minimum-stability": "stable"

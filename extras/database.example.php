@@ -56,7 +56,7 @@ return array(
 		'type'     => 'mongoDB',
 		// Network configuration
 		'hostname' => 'localhost',
-		'port'     => '5432',
+		'port'     => '27017',
 		// Set the database name and user credentials
 		'database' => 'test3',
 		'prefix'   => '',

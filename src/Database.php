@@ -1,4 +1,4 @@
-<?php namespace DrMVC\Plugins\Database\Core;
+<?php namespace DrMVC\Database;
 
 /**
  * Class Database for work with databases
@@ -51,7 +51,7 @@ abstract class Database
             }
 
             // Set the driver class name
-            $driver = '\\Modules\\Database\\Core\\Drivers\\D' . ucfirst($config['type']);
+            $driver = '\\DrMVC\\Database\\Drivers\\D' . ucfirst($config['type']);
 
             // Create the database connection instance
             $driver = new $driver($name, $config);

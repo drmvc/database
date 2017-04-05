@@ -13,7 +13,7 @@ Also you can work with MongoDB and MySQL from one controller.
 * PostgreSQL
 * MySQL
 * SQLite
-* MongoDB (PHP7 only)
+* MongoDB (PHP5 and PHP7 versions)
 * and any other PDO databases
 
 ## How to install

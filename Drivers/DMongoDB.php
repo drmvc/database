@@ -1,22 +1,11 @@
 <?php namespace DrMVC\Database\Drivers;
 
 /**
- * Modern MongoDB php driver for mongo >=0.9.0
+ * Modern MongoDB php driver for mongo >=3.0.0
  * @package Modules\Database\Core\Drivers
  */
 
 use DrMVC\Database\Database;
-
-use MongoDB\BSON\ObjectID as ObjectID;
-
-use MongoDB\Driver\Manager as MongoManager;
-use MongoDB\Driver\Command as MongoCommand;
-use MongoDB\Driver\Query as MongoQuery;
-use MongoDB\Driver\BulkWrite as BulkWrite;
-use MongoDB\Driver\WriteConcern as WriteConcern;
-
-use MongoDB\Driver\Exception\BulkWriteException as MongoBulkWriteException;
-use MongoDB\Driver\Exception\Exception as MongoException;
 
 class DMongoDB extends Database
 {
@@ -42,7 +31,7 @@ class DMongoDB extends Database
         $config = $this->_config;
 
         // Connect to database
-        $this->_connection = new MongoManager('mongodb://' . $config['username'] . ':' . $config['password'] . '@' . $config['hostname'] . ':' . $config['port'] . '/' . $config['database']);
+        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $config['username'] . ':' . $config['password'] . '@' . $config['hostname'] . ':' . $config['port'] . '/' . $config['database']);
     }
 
     /**
@@ -65,11 +54,11 @@ class DMongoDB extends Database
         $config = $this->_config;
 
         // Exec bulk command
-        $bulk = new BulkWrite();
+        $bulk = new \MongoDB\Driver\BulkWrite();
 
         switch ($command) {
             case 'insert':
-                $data['_id'] = new ObjectID;
+                $data['_id'] = new \MongoDB\BSON\ObjectID;
                 $bulk->insert($data);
                 break;
             case 'update';
@@ -81,10 +70,10 @@ class DMongoDB extends Database
         }
 
         try {
-            $writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
+            $writeConcern = new \MongoDB\Driver\WriteConcern(\MongoDB\Driver\WriteConcern::MAJORITY, 1000);
             $this->_connection->executeBulkWrite($config['database'] . '.' . $collection, $bulk, $writeConcern);
-            if ($command == 'insert') $response = (string) new ObjectID($data['_id']); else $response = true;
-        } catch (MongoBulkWriteException $e) {
+            if ($command == 'insert') $response = (string) new \MongoDB\BSON\ObjectID($data['_id']); else $response = true;
+        } catch (\MongoDB\Driver\Exception\BulkWriteException $e) {
             //print_r($e);die();
             echo $e->getMessage(), "\n";
             //exit;
@@ -111,12 +100,12 @@ class DMongoDB extends Database
         $config = $this->_config;
 
         // Create command from query
-        $command = new MongoCommand($query);
+        $command = new \MongoDB\Driver\Command($query);
 
         try {
             $cursor = $this->_connection->executeCommand($config['database'], $command);
             $response = $cursor->toArray();
-        } catch (MongoException $e) {
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
             echo $e->getMessage(), "\n";
             exit;
         }
@@ -144,12 +133,12 @@ class DMongoDB extends Database
         $config = $this->_config;
 
         // Create command from query
-        $query = new MongoQuery($filter, $options);
+        $query = new \MongoDB\Driver\Query($filter, $options);
 
         try {
             $cursor = $this->_connection->executeQuery($config['database'] . '.' . $collection, $query);
             $response = $cursor->toArray();
-        } catch (MongoException $e) {
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
             echo $e->getMessage(), "\n";
             exit;
         }

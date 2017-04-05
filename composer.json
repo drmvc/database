@@ -24,7 +24,8 @@
   ],
   "require": {
     "php": "^5.5 || ^7.0",
-    "drmvc/helpers": "dev-master"
+    "drmvc/helpers": "dev-master",
+    "drmvc/config": "dev-master"
   },
   "autoload": {
     "psr-4": {

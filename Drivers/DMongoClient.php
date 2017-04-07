@@ -1,13 +1,12 @@
 <?php namespace DrMVC\Database\Drivers;
 
-/**
- * Old and unsupported MongoDB php driver for mongo < 1.0.0
- * @package Modules\Database\Core\Drivers
- */
-
 use DrMVC\Database\Database;
 use MongoClient;
 
+/**
+ * Old and unsupported MongoDB php driver (for PHP <= 5.6)
+ * @package DrMVC\Database\Drivers
+ */
 class DMongoClient extends Database
 {
 

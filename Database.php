@@ -1,12 +1,11 @@
 <?php namespace DrMVC\Database;
 
-/**
- * Class Database for work with databases
- * @package Modules\Database\Core
- */
-
 use DrMVC\Core\Config;
 
+/**
+ * Class for work with databases
+ * @package Modules\Database\Core
+ */
 abstract class Database
 {
 

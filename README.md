@@ -19,3 +19,38 @@ Also you can work with MongoDB and MySQL from one controller.
 ## How to install
 
 `composer require drmvc/database`
+
+## How to use
+
+You can write your custom method, for example:
+
+    public function someMethod() {
+        return $this->db->select("SELECT * FROM table");
+    }
+
+Or work with system calls:
+
+### Select
+
+    $where = ['name' => 'somename', 'email' => 'someemail'];
+    $model = new Model();
+    $model->select($where); 
+
+### Insert
+
+    $data = ['name' => 'somename', 'email' => 'someemail'];
+    $model = new Model();
+    $model->insert($data);
+
+### Update
+
+    $data = ['name' => 'newname'];
+    $where = ['name' => 'somename', 'email' => 'someemail'];
+    $model = new Model();
+    $model->update($data, $where);
+
+### Delete
+
+    $where = ['name' => 'somename', 'email' => 'someemail'];
+    $model = new Model();
+    $model->delete($where);

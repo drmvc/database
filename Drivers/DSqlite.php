@@ -1,14 +1,13 @@
 <?php namespace DrMVC\Database\Drivers;
 
+use DrMVC\Database\Database;
+use PDO;
+use PDOException;
+
 /**
  * Extended PDO class for work with SQLite driver
- * @package Modules\Database\Core\Drivers
+ * @package DrMVC\Database\Drivers
  */
-
-use DrMVC\Database\Database;
-
-use PDO;
-
 class DSqlite extends Database
 {
     /**

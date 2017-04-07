@@ -1,12 +1,11 @@
 <?php namespace DrMVC\Database\Drivers;
 
-/**
- * Modern MongoDB php driver for mongo >=3.0.0
- * @package Modules\Database\Core\Drivers
- */
-
 use DrMVC\Database\Database;
 
+/**
+ * Class for work with modern MongoDB php driver (for PHP >= 7.0)
+ * @package DrMVC\Database\Drivers
+ */
 class DMongoDB extends Database
 {
     /**

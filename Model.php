@@ -1,14 +1,12 @@
 <?php namespace DrMVC\Database;
 
+use DrMVC\Core\Config;
+
 /**
  * Database Model base class, this class like abstracted class, should be reassign via another driver class
- * @package Modules\Database\Core
+ * @package DrMVC\Database
  */
-
-use DrMVC\Core\Config;
-use DrMVC\Core\Model as System_Model;
-
-abstract class Model extends System_Model
+abstract class Model
 {
     // Database protected instance
     protected $_db;

@@ -1,14 +1,13 @@
 <?php namespace DrMVC\Database\Drivers;
 
+use DrMVC\Database\Database;
+use PDO;
+use PDOException;
+
 /**
  * Class for work with PDO drivers
- * @package Modules\Database\Core\Drivers
+ * @package DrMVC\Database\Drivers
  */
-
-use DrMVC\Database\Database;
-
-use PDO;
-
 class DPdo extends Database
 {
     public function __construct($name, array $config)

@@ -27,6 +27,9 @@
     "drmvc/helpers": "^1.0",
     "drmvc/config": "^1.0"
   },
+  "require-dev": {
+    "phpunit/phpunit": "~5.7"
+  },
   "autoload": {
     "psr-4": {
       "DrMVC\\Database\\": "/src/"

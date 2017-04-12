@@ -99,7 +99,7 @@ abstract class Database
      */
     public function __destruct()
     {
-        $this->disconnect();
+        return $this->disconnect();
     }
 
     /**

@@ -44,6 +44,8 @@ abstract class Model
      */
     public function __construct($db = null)
     {
+        $return = false;
+
         if ($db) {
             // Set the instance or name
             $this->_db = $db;
@@ -58,8 +60,11 @@ abstract class Model
 
         if (is_string($this->_db)) {
             // Load the database
-            $this->db = Database::init($this->_db);
+            $return = Database::init($this->_db);
+            $this->db = $return;
         }
+
+        return $return;
     }
 
 }

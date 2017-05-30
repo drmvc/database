@@ -34,23 +34,23 @@ Or work with system calls:
 
     $where = ['name' => 'somename', 'email' => 'someemail'];
     $model = new Model();
-    $model->select($where); 
+    $model->db->select($where); 
 
 ### Insert
 
     $data = ['name' => 'somename', 'email' => 'someemail'];
     $model = new Model();
-    $model->insert($data);
+    $model->db->insert($data);
 
 ### Update
 
     $data = ['name' => 'newname'];
     $where = ['name' => 'somename', 'email' => 'someemail'];
     $model = new Model();
-    $model->update($data, $where);
+    $model->db->update($data, $where);
 
 ### Delete
 
     $where = ['name' => 'somename', 'email' => 'someemail'];
     $model = new Model();
-    $model->delete($where);
+    $model->db->delete($where);

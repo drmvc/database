@@ -34,6 +34,25 @@ class DMongoDB extends Database
     }
 
     /**
+     * Check if incoming hash is valid mongo object id hash
+     *
+     * @param $value
+     * @return bool
+     */
+    function isValid($value)
+    {
+        if ($value instanceof \MongoDB\BSON\ObjectID) {
+            return true;
+        }
+        try {
+            new \MongoDB\BSON\ObjectID($value);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Write into database
      *
      * @param $collection

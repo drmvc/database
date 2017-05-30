@@ -1,6 +1,6 @@
 {
   "name": "drmvc/database",
-  "type": "project",
+  "type": "library",
   "description": "Advanced plugin for work with database for DrMVC Framework",
   "homepage": "https://drmvc.com/",
   "license": "MIT",

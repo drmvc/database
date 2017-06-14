@@ -72,14 +72,20 @@ abstract class Database
      */
     public function __construct($name, array $config)
     {
+        // First key of config
+        $first_key = current(array_keys($config));
+
+        // If first key is array then overload $config variable
+        if (is_array($config[$first_key])) $config = $config[$name];
+
+        // Check for empty prefix of tables
+        if (empty($config['prefix'])) $config['prefix'] = '';
+
         // Set the instance name
         $this->_instance = $name;
+
         // Store the config locally
         $this->_config = $config;
-
-        if (empty($this->_config[$name]['prefix'])) {
-            $this->_config[$name]['prefix'] = '';
-        }
     }
 
     /**

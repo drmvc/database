@@ -77,8 +77,8 @@ abstract class Database
         // Store the config locally
         $this->_config = $config;
 
-        if (empty($this->_config['prefix'])) {
-            $this->_config['prefix'] = '';
+        if (empty($this->_config[$name]['prefix'])) {
+            $this->_config[$name]['prefix'] = '';
         }
     }
 

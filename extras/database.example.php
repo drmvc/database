@@ -11,7 +11,6 @@ return array(
 		'port'     => '5432',
 		// Set the database name and user credentials
 		'database' => 'test1',
-		'prefix'   => '',
 		'username' => 'test',
 		'password' => 'testp',
 		// Client encoding
@@ -30,10 +29,9 @@ return array(
 		'driver'   => 'mysql',
 		// Network configuration
 		'hostname' => 'localhost',
-		'port'     => '5432',
+		'port'     => '3306',
 		// Set the database name and user credentials
 		'database' => 'test2',
-		'prefix'   => '',
 		'username' => 'test',
 		'password' => 'testp',
 		// Client encoding
@@ -47,7 +45,6 @@ return array(
 		'port'     => '5432',
 		// Set the database name and user credentials
 		'database' => 'test3',
-		'prefix'   => '',
 		'username' => 'test',
 		'password' => 'testp',
 	),
@@ -59,7 +56,6 @@ return array(
 		'port'     => '27017',
 		// Set the database name and user credentials
 		'database' => 'test3',
-		'prefix'   => '',
 		'username' => 'test',
 		'password' => 'testp',
 	),

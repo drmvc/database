@@ -2,55 +2,47 @@
 
 Advanced plugin for work with databases.
 
-This specific module, it allows you to use multiple databases at the same time, you can switch database from model class.
+    composer require drmvc/database
 
-You can call same model methods via different databases.
-
-Also you can work with MongoDB and MySQL from one controller.
+It is a specific module, allows you to use multiple databases at the same time, you can switch database from model class.
+You can call same model methods via different databases, also you can work with MongoDB and MySQL from one controller.
 
 ## Supported databases
 
-* PostgreSQL
-* MySQL
-* SQLite
+* PostgreSQL, MySQL, SQLite and any other PDO databases
 * MongoDB (PHP5 and PHP7 versions)
-* and any other PDO databases
-
-## How to install
-
-`composer require drmvc/database`
 
 ## How to use
 
-You can write your custom method, for example:
+You can write your custom method inside model, for example:
 
-    public function someMethod() {
-        return $this->db->select("SELECT * FROM table");
-    }
+```php
+public function someMethod() {
+    return $this->db->select("SELECT * FROM table");
+}
+```
 
 Or work with system calls:
 
-### Select
+```php
+// Select
+$where = ['name' => 'somename', 'email' => 'someemail'];
+$model = new Model();
+$model->db->select($where); 
 
-    $where = ['name' => 'somename', 'email' => 'someemail'];
-    $model = new Model();
-    $model->db->select($where); 
+// Insert
+$data = ['name' => 'somename', 'email' => 'someemail'];
+$model = new Model();
+$model->db->insert($data);
 
-### Insert
+// Update
+$data = ['name' => 'newname'];
+$where = ['name' => 'somename', 'email' => 'someemail'];
+$model = new Model();
+$model->db->update($data, $where);
 
-    $data = ['name' => 'somename', 'email' => 'someemail'];
-    $model = new Model();
-    $model->db->insert($data);
-
-### Update
-
-    $data = ['name' => 'newname'];
-    $where = ['name' => 'somename', 'email' => 'someemail'];
-    $model = new Model();
-    $model->db->update($data, $where);
-
-### Delete
-
-    $where = ['name' => 'somename', 'email' => 'someemail'];
-    $model = new Model();
-    $model->db->delete($where);
+// Delete
+$where = ['name' => 'somename', 'email' => 'someemail'];
+$model = new Model();
+$model->db->delete($where);
+```

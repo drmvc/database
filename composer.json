@@ -24,7 +24,6 @@
   ],
   "require": {
     "php": "^5.5 || ^7.0",
-    "drmvc/helpers": "^1.0",
     "drmvc/config": "^1.0"
   },
   "require-dev": {

@@ -7,6 +7,19 @@ php:
   - nightly
 
 before_script:
+  # Create database
+  - mysql -e "DROP DATABASE IF EXISTS db_name;"
+  - mysql -e "CREATE DATABASE IF NOT EXISTS db_name;"
+
+  # Create database user
+  - mysql -e "CREATE USER 'db_user'@'localhost' IDENTIFIED BY 'db_pass';"
+  - mysql -e "GRANT ALL PRIVILEGES ON db_name.* TO 'db_user'@'localhost';"
+  - mysql -e "FLUSH PRIVILEGES;"
+
+  # Import dump
+  - mysql -u root --default-character-set=utf8 db_name < extra/database.sql
+
+  # Install composer
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 

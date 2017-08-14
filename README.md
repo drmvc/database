@@ -1,11 +1,20 @@
-# DrMVC / Database
+# DrMVC Database
 
-Advanced plugin for work with databases.
+[![Latest Stable Version](https://poser.pugx.org/drmvc/database/v/stable)](https://packagist.org/packages/drmvc/database)
+[![Build Status](https://travis-ci.org/drmvc/database.svg?branch=master)](https://travis-ci.org/drmvc/database)
+[![Total Downloads](https://poser.pugx.org/drmvc/database/downloads)](https://packagist.org/packages/drmvc/database)
+[![License](https://poser.pugx.org/drmvc/database/license)](https://packagist.org/packages/drmvc/database)
+[![PHP 7 ready](https://php7ready.timesplinter.ch/drmvc/database/master/badge.svg)](https://travis-ci.org/drmvc/database)
+
+Advanced module for work with databases and models.
 
     composer require drmvc/database
 
 It is a specific module, allows you to use multiple databases at the same time, you can switch database from model class.
 You can call same model methods via different databases, also you can work with MongoDB and MySQL from one controller.
+
+This module uses an ORM similar concept of work, but if you need a more convenient ORM you can try
+[AerodORM](https://github.com/drmvc/aerodorm), which is also part of DrMVC.
 
 ## Supported databases
 
@@ -25,24 +34,25 @@ public function someMethod() {
 Or work with system calls:
 
 ```php
-// Select
-$where = ['name' => 'somename', 'email' => 'someemail'];
+// Model object
 $model = new Model();
-$model->db->select($where); 
 
-// Insert
+// Dummy data
 $data = ['name' => 'somename', 'email' => 'someemail'];
-$model = new Model();
-$model->db->insert($data);
-
-// Update
-$data = ['name' => 'newname'];
 $where = ['name' => 'somename', 'email' => 'someemail'];
-$model = new Model();
-$model->db->update($data, $where);
 
-// Delete
-$where = ['name' => 'somename', 'email' => 'someemail'];
-$model = new Model();
-$model->db->delete($where);
+// Run some query and return the result
+$model->db->select("SELECT * FROM users WHERE name = :name AND email = :email", $where);
+
+// Run query without responce
+$model->db->select("SELECT * FROM users");
+
+// Insert new data into `users` table
+$model->db->insert('users', $data);
+
+// Update some data inside table
+$model->db->update('users', $data, $where);
+
+// Delete data from table
+$model->db->delete('users', $where);
 ```

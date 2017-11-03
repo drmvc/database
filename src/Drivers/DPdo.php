@@ -28,8 +28,11 @@ class DPdo extends Database
         $config = $this->_config;
         // Force PDO to use exceptions for all errors
         $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+
         // Connection string
-        $dsn = $config['driver'] . ":host=" . $config['hostname'] . ";port=" . $config['port'] . ";dbname=" . $config['database'] . ";charset=" . $config['encoding'];
+        $dsn = $config['driver'] . ":host=" . $config['hostname'] . ";port=" . $config['port'] . ";dbname=" . $config['database'];
+        // If encoding is set
+        $dsn .= !empty($config['encoding']) ? ";charset=" . $config['encoding'] : null;
 
         //echo "$dsn, $config[username], $config[password]";
         $this->_connection = new PDO($dsn, $config['username'], $config['password'], $options);

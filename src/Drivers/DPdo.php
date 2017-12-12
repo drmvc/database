@@ -158,16 +158,24 @@ class DPdo extends Database
         $whereDetails = null;
         $i = 0;
         foreach ($where as $key => $value) {
+            // Small hack for mysql databases
+            $key_name = "$key";
             switch ($config['driver']) {
                 case 'mysql':
-                    if ($i == 0) $whereDetails .= "`$key` = :where_$key";
-                    else $whereDetails .= " AND `$key` = :where_$key";
-                    break;
-                default:
-                    if ($i == 0) $whereDetails .= "$key = :where_$key";
-                    else $whereDetails .= " AND $key = :where_$key";
+                    $key_name = "`$key`";
                     break;
             }
+
+            // Check for null variable and exclude from array
+            if ($value === null) {
+                if ($i == 0) $whereDetails .= "$key_name IS NULL";
+                else $whereDetails .= " AND $key_name IS NULL";
+                unset($where[$key]);
+                continue;
+            }
+
+            if ($i == 0) $whereDetails .= "$key_name = :where_$key";
+            else $whereDetails .= " AND $key_name = :where_$key";
             $i++;
         }
         $whereDetails = ltrim($whereDetails, ' AND ');

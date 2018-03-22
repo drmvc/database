@@ -17,6 +17,9 @@ class DMongoDB extends Database
     public function __construct($name, array $config)
     {
         parent::__construct($name, $config);
+
+        // Make sure the database is connected
+        $this->_connection or $this->connect();
     }
 
     /**
@@ -26,11 +29,8 @@ class DMongoDB extends Database
     {
         if ($this->_connection) return;
 
-        // Configurations
-        $config = $this->_config;
-
         // Connect to database
-        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $config['username'] . ':' . $config['password'] . '@' . $config['hostname'] . ':' . $config['port'] . '/' . $config['database']);
+        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $this->_config['username'] . ':' . $this->_config['password'] . '@' . $this->_config['hostname'] . ':' . $this->_config['port'] . '/' . $this->_config['database']);
     }
 
     /**
@@ -62,14 +62,8 @@ class DMongoDB extends Database
      */
     public function write($collection, $command, $data)
     {
-        // Make sure the database is connected
-        $this->_connection or $this->connect();
-
         // Set the last query
         $this->_last_query = $data;
-
-        // Configurations
-        $config = $this->_config;
 
         // Exec bulk command
         $bulk = new \MongoDB\Driver\BulkWrite();
@@ -89,12 +83,15 @@ class DMongoDB extends Database
 
         try {
             $writeConcern = new \MongoDB\Driver\WriteConcern(\MongoDB\Driver\WriteConcern::MAJORITY, 1000);
-            $this->_connection->executeBulkWrite($config['database'] . '.' . $collection, $bulk, $writeConcern);
+            $this->_connection->executeBulkWrite($this->_config['database'] . '.' . $collection, $bulk, $writeConcern);
             if ($command == 'insert') $response = (string) new \MongoDB\BSON\ObjectID($data['_id']); else $response = true;
         } catch (\MongoDB\Driver\Exception\BulkWriteException $e) {
-            //print_r($e);die();
-            echo $e->getMessage(), "\n";
-            //exit;
+            error_log(
+                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
+                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
+                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
+            );
+            exit;
         }
 
         return $response;
@@ -108,23 +105,21 @@ class DMongoDB extends Database
      */
     public function command($query)
     {
-        // Make sure the database is connected
-        $this->_connection or $this->connect();
-
         // Set the last query
         $this->_last_query = $query;
-
-        // Configurations
-        $config = $this->_config;
 
         // Create command from query
         $command = new \MongoDB\Driver\Command($query);
 
         try {
-            $cursor = $this->_connection->executeCommand($config['database'], $command);
+            $cursor = $this->_connection->executeCommand($this->_config['database'], $command);
             $response = $cursor->toArray();
         } catch (\MongoDB\Driver\Exception\Exception $e) {
-            echo $e->getMessage(), "\n";
+            error_log(
+                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
+                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
+                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
+            );
             exit;
         }
 
@@ -141,23 +136,21 @@ class DMongoDB extends Database
      */
     public function query($collection, $filter, $options)
     {
-        // Make sure the database is connected
-        $this->_connection or $this->connect();
-
         // Set the last query
         $this->_last_query = array($collection, $filter, $options);
-
-        // Configurations
-        $config = $this->_config;
 
         // Create command from query
         $query = new \MongoDB\Driver\Query($filter, $options);
 
         try {
-            $cursor = $this->_connection->executeQuery($config['database'] . '.' . $collection, $query);
+            $cursor = $this->_connection->executeQuery($this->_config['database'] . '.' . $collection, $query);
             $response = $cursor->toArray();
         } catch (\MongoDB\Driver\Exception\Exception $e) {
-            echo $e->getMessage(), "\n";
+            error_log(
+                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
+                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
+                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
+            );
             exit;
         }
 

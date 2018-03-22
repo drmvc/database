@@ -29,8 +29,14 @@ class DMongoDB extends Database
     {
         if ($this->_connection) return;
 
-        // Connect to database
-        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $this->_config['username'] . ':' . $this->_config['password'] . '@' . $this->_config['hostname'] . ':' . $this->_config['port'] . '/' . $this->_config['database']);
+        // Auth to database
+        $userpass = isset($this->_config['username']) && isset($this->_config['password']) ? $this->_config['username'] . ':' . $this->_config['password'] . '@' : null;
+
+        // Check if we want to authenticate against a specific database.
+        $auth_database = isset($this->_config['options']) && !empty($this->_config['options']['database']) ? $this->_config['options']['database'] : null;
+
+        // Set connection
+        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $userpass . $this->_config['hostname'] . ':' . $this->_config['port'] . ($auth_database ? '/' . $auth_database : ''));
     }
 
     /**

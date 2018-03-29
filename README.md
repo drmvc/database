@@ -11,14 +11,14 @@ Advanced module for work with databases and models.
     composer require drmvc/database
 
 It is a specific module, allows you to use multiple databases at the same time, you can switch database from model class.
-You can call same model methods via different databases, also you can work with MongoDB and MySQL from one controller.
+You can call same model methods via different databases, also you can work with MongoDB and Mysql from one controller.
 
 This module uses an ORM similar concept of work, but if you need a more convenient ORM you can try
 [AerodORM](https://github.com/drmvc/aerodorm), which is also part of DrMVC.
 
 ## Supported databases
 
-* PostgreSQL, MySQL, SQLite and any other PDO databases
+* PostgreSQL, Mysql, SQLite and any other PDO databases
 * MongoDB (PHP5 and PHP7 versions)
 
 ## How to use

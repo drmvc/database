@@ -1,70 +1,65 @@
-<?php namespace DrMVC\Database\Drivers;
+<?php
 
-use DrMVC\Database\Database;
-use PDO;
-use PDOException;
+namespace DrMVC\Database\Drivers;
 
-/**
- * Extended PDO class for work with SQLite driver
- * @package DrMVC\Database\Drivers
- */
-class DSqlite extends Database
+abstract class SQL extends Driver
 {
     /**
-     * DSqlite constructor
+     * Initiate connection to database
      *
-     * @param string $name
-     * @param array $config
+     * @return  DriverInterface
      */
-    public function __construct($name, array $config)
+    public function connect(): DriverInterface
     {
-        parent::__construct($name, $config);
-
-        if (!$this->_connection) $this->connect();
+        $connection = new \PDO($this->getDsn());
+        $this->setConnection($connection);
+        return $this;
     }
 
     /**
-     * PDO sqlite have some difference with another PDO drivers
+     * Close database connection
+     *
+     * @return  DriverInterface
      */
-    public function connect()
+    public function disconnect(): DriverInterface
     {
-        if ($this->_connection) return;
-
-        // Configurations
-        $config = $this->_config;
-
-        $this->_connection = new PDO('sqlite:' . $config['file']);
+        $this->setConnection(null);
+        return $this;
     }
 
     /**
      * Run a select statement against the database
      *
      * @param  string $query
-     * @param  array  $array parameter into named array
-     * @return array
+     * @param  array $data
+     * @return array|object
      */
-    public function select($query, $array = array())
+    public function select($query, array $data = [])
     {
+        // Set statement
         $statement = $this->_connection->prepare($query);
-        foreach ($array as $key => $value) {
-            if (is_int($value)) {
-                $statement->bindValue("$key", $value, PDO::PARAM_INT);
+
+        // Parse parameters from array
+        foreach ($data as $key => $value) {
+            if (\is_int($value)) {
+                $statement->bindValue($key, $value, \PDO::PARAM_INT);
             } else {
-                $statement->bindValue("$key", $value);
+                $statement->bindValue($key, $value);
             }
         }
 
-        // Execute the Statement.
+        // Execute the statement
         $statement->execute();
 
-        return $statement->fetchAll(PDO::FETCH_OBJ);
+        // Return result
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
     /**
      * Exec query without return, create table for example
      *
-     * @param $query
-     * @return mixed
+     * @param   string $query
+     * @return  mixed
      */
     public function exec($query)
     {
@@ -72,21 +67,20 @@ class DSqlite extends Database
     }
 
     /**
-     * Insert method
+     * Insert in database and return of inserted element
      *
-     * @param  string $table table name
      * @param  array $data array of columns and values
-     * @return string
+     * @return int
      */
-    public function insert($table, $data)
+    public function insert(array $data): int
     {
-        ksort($data);
+        // Current table
+        $table = $this->getConnection();
 
         $fieldNames = implode(',', array_keys($data));
         $fieldValues = ':' . implode(', :', array_keys($data));
 
         $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldValues)");
-        error_log("INSERT INTO $table ($fieldNames) VALUES ($fieldValues)", 0);
 
         foreach ($data as $key => $value) {
             $statement->bindValue(":$key", $value);
@@ -96,17 +90,18 @@ class DSqlite extends Database
         return $this->_connection->lastInsertId();
     }
 
+
     /**
      * Update method
      *
-     * @param  string $table table name
      * @param  array $data array of columns and values
      * @param  array $where array of columns and values
-     * @return string
+     * @return int
      */
-    public function update($table, $data, $where)
+    public function update(array $data, array $where): int
     {
-        ksort($data);
+        // Current table
+        $table = $this->getConnection();
 
         $fieldDetails = null;
         foreach ($data as $key => $value) {
@@ -117,7 +112,7 @@ class DSqlite extends Database
         $whereDetails = null;
         $i = 0;
         foreach ($where as $key => $value) {
-            if ($i == 0) {
+            if ($i === 0) {
                 $whereDetails .= "$key = :where_$key";
             } else {
                 $whereDetails .= " AND $key = :where_$key";
@@ -125,10 +120,12 @@ class DSqlite extends Database
             $i++;
         }
         $whereDetails = ltrim($whereDetails, ' AND ');
-        if (!empty($where)) $whereDetails = ' WHERE ' . $whereDetails;
+
+        if (!empty($where)) {
+            $whereDetails = ' WHERE ' . $whereDetails;
+        }
 
         $statement = $this->_connection->prepare("UPDATE $table SET $fieldDetails $whereDetails");
-        //error_log("UPDATE $table SET $fieldDetails $whereDetails", 0);
 
         foreach ($data as $key => $value) {
             $statement->bindValue(":field_$key", $value);
@@ -142,49 +139,47 @@ class DSqlite extends Database
         return $statement->rowCount();
     }
 
-
     /**
      * Delete rows from database
      *
-     * @param $table
-     * @param $where
-     * @param int $limit
+     * @param   array $where
+     * @return  bool
      */
-    public function delete($table, $where, $limit = 1)
+    public function delete(array $where): bool
     {
-        ksort($where);
+        // Current table
+        $table = $this->getConnection();
 
-        $whereDetails = NULL;
+        $whereDetails = null;
         $i = 0;
         foreach ($where as $key => $value) {
-            if ($i == 0) {
-                $whereDetails .= "$key = :where_$key";
-            } else {
-                $whereDetails .= " AND $key = :where_$key";
-            }
+            // Parse where array
+            $whereDetails .= ($i === 0)
+                ? "$key = :where_$key"
+                : " AND $key = :where_$key";
+            // Increment
             $i++;
         }
         $whereDetails = ltrim($whereDetails, ' AND ');
-
         $statement = $this->_connection->prepare("DELETE FROM $table WHERE $whereDetails");
-        error_log("DELETE FROM $table WHERE $whereDetails", 0);
 
         foreach ($where as $key => $value) {
             $statement->bindValue(":where_$key", $value);
         }
 
-        $statement->execute();
+        return $statement->execute();
     }
 
     /**
      * Clean table function
      *
-     * @param $table
      * @return mixed
      */
-    public function truncate($table)
+    public function truncate()
     {
+        // Current table
+        $table = $this->getConnection();
+
         return $this->exec("TRUNCATE TABLE $table");
     }
-
 }

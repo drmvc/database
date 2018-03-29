@@ -1,12 +1,13 @@
 <?php namespace DrMVC\Database\Drivers;
 
 use DrMVC\Database\Database;
+use MongoDB\BSON\ObjectID;
 
 /**
  * Class for work with modern MongoDB php driver (for PHP >= 7.0)
  * @package DrMVC\Database\Drivers
  */
-class DMongoDB extends Database
+class Mongo extends NoSQL
 {
     /**
      * DMongoDB constructor
@@ -47,11 +48,11 @@ class DMongoDB extends Database
      */
     function isValid($value)
     {
-        if ($value instanceof \MongoDB\BSON\ObjectID) {
+        if ($value instanceof ObjectID) {
             return true;
         }
         try {
-            new \MongoDB\BSON\ObjectID($value);
+            new ObjectID($value);
             return true;
         } catch (\Exception $e) {
             return false;

@@ -22,27 +22,58 @@ abstract class Driver implements DriverInterface, QueryInterface
     private $_config;
 
     /**
-     * Driver constructor.
-     * @param ConfigInterface $config
+     * Name of collection
+     * @var string
      */
-    public function __construct(ConfigInterface $config)
+    private $_collection;
+
+    /**
+     * Driver constructor.
+     *
+     * @param   ConfigInterface $config object with current configuration
+     * @param   string $collection name of collection
+     */
+    public function __construct(ConfigInterface $config, string $collection)
     {
-        $this->_config = $config;
+        $this->setConfig($config);
+        $this->setCollection($this->getConfig()->get('prefix') . $collection);
     }
 
     /**
-     * @return DriverInterface
+     * Initiate connection with database
+     *
+     * @return  DriverInterface
      */
     abstract public function connect(): DriverInterface;
 
     /**
-     * @return DriverInterface
+     * Disconnect from database
+     *
+     * @return  DriverInterface
      */
     abstract public function disconnect(): DriverInterface;
 
     /**
-     * @param ConfigInterface $config
-     * @return DriverInterface
+     * @param   string $collection
+     * @return  DriverInterface
+     */
+    public function setCollection(string $collection): DriverInterface
+    {
+        $this->_collection = $collection;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollection(): string
+    {
+        return $this->_collection;
+    }
+
+    /**
+     * @param   ConfigInterface $config
+     * @return  DriverInterface
      */
     public function setConfig(ConfigInterface $config): DriverInterface
     {
@@ -51,7 +82,7 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
-     * @return ConfigInterface
+     * @return  ConfigInterface
      */
     public function getConfig(): ConfigInterface
     {
@@ -77,19 +108,19 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
-     * @param   mixed $connection
+     * @param   \PDO $connection
      * @return  DriverInterface
      */
-    public function setConnection($connection): DriverInterface
+    public function setConnection(\PDO $connection): DriverInterface
     {
         $this->_connection = $connection;
         return $this;
     }
 
     /**
-     * @return  mixed
+     * @return  \PDO
      */
-    public function getConnection()
+    public function getConnection(): \PDO
     {
         return $this->_connection;
     }

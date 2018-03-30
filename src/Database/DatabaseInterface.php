@@ -9,7 +9,7 @@ interface DatabaseInterface
     /**
      * Default name of database
      */
-    const DEFAULT_DATABASE = 'default';
+    const DEFAULT_CONNECTION = 'default';
 
     /**
      * Allowed drivers
@@ -17,7 +17,8 @@ interface DatabaseInterface
     const ALLOWED_DRIVERS = ['mysql', 'pgsql', 'sqlite', 'mongo'];
 
     /**
-     * @return QueryInterface
+     * @param   string $collection
+     * @return  QueryInterface
      */
-    public function getInstance(): QueryInterface;
+    public function getInstance(string $collection): QueryInterface;
 }

@@ -2,8 +2,8 @@
 
 namespace DrMVC\Database;
 
+use DrMVC\Config;
 use DrMVC\Config\ConfigInterface;
-use DrMVC\Database\Drivers\DriverInterface;
 use DrMVC\Database\Drivers\QueryInterface;
 
 /**
@@ -22,20 +22,19 @@ class Database implements DatabaseInterface
      *
      * @param   ConfigInterface $config
      */
-    public function __construct(ConfigInterface $config = null)
+    public function __construct(ConfigInterface $config)
     {
-        if (null !== $config) {
-            $this->setConfig($config);
-        }
+        $this->setConfig($config);
     }
 
     /**
-     * @return QueryInterface
+     * @param   string $collection
+     * @return  QueryInterface
      */
-    public function getInstance(): QueryInterface
+    public function getInstance(string $collection): QueryInterface
     {
         $class = $this->getDriver();
-        return new $class($this->getConfig());
+        return new $class($this->getConfig(), $collection);
     }
 
     /**
@@ -45,12 +44,17 @@ class Database implements DatabaseInterface
      */
     private function getDriver(): string
     {
+        // Extract driver name from current config
         $driver = $this->getConfig('driver');
 
         try {
+            if (!\is_string($driver)) {
+                throw new Exception('Wrong type of "driver" item in config, must be a string');
+            }
+
             if (!\in_array($driver, self::ALLOWED_DRIVERS, false)) {
-                throw new Exception("Driver \"$driver\" is not in allowed list [" . implode(',',
-                        self::ALLOWED_DRIVERS) . ']');
+                $allowed = implode(',', self::ALLOWED_DRIVERS);
+                throw new Exception("Driver \"$driver\" is not in allowed list [" . $allowed . ']');
             }
         } catch (Exception $e) {
             // __constructor

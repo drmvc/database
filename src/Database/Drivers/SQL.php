@@ -37,7 +37,7 @@ abstract class SQL extends Driver
     public function select(string $query, array $data = [])
     {
         // Set statement
-        $statement = $this->_connection->prepare($query);
+        $statement = $this->getConnection()->prepare($query);
 
         // Parse parameters from array
         foreach ($data as $key => $value) {
@@ -60,7 +60,7 @@ abstract class SQL extends Driver
      */
     public function exec(string $query)
     {
-        return $this->_connection->exec($query);
+        return $this->getConnection()->exec($query);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class SQL extends Driver
             : '';
 
         // Prepare query
-        $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
+        $statement = $this->getConnection()->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
 
         // Bind field values
         foreach ($data as $key => $value) {
@@ -94,7 +94,7 @@ abstract class SQL extends Driver
         $statement->execute();
 
         // Return ID of inserted element
-        return $this->_connection->lastInsertId();
+        return $this->getConnection()->lastInsertId();
         // TODO: Need to add ability to set the name of ID field (not only "id")
     }
 
@@ -162,7 +162,7 @@ abstract class SQL extends Driver
             : '';
 
         // Prepare query
-        $statement = $this->_connection->prepare("UPDATE $table SET $fieldDetails $whereDetails");
+        $statement = $this->getConnection()->prepare("UPDATE $table SET $fieldDetails $whereDetails");
 
         // Bind field values
         foreach ($data as $key => $value) {
@@ -198,7 +198,7 @@ abstract class SQL extends Driver
             : '';
 
         // Prepare query
-        $statement = $this->_connection->prepare("DELETE FROM $table $whereDetails");
+        $statement = $this->getConnection()->prepare("DELETE FROM $table $whereDetails");
 
         // Bind where values
         foreach ($where as $key => $value) {

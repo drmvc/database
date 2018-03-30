@@ -2,15 +2,15 @@
 
 return [
     'default' => [
-        'driver'    => getenv('DB_DRIVER'),
-        'host'      => getenv('DB_HOST'),
-        'port'      => getenv('DB_PORT'),
-        'prefix'    => getenv('DB_PREFIX') . '_',
-        'collation' => getenv('DB_COLLATION'),
-        'charset'   => getenv('DB_CHARSET'),
-        'database'  => getenv('DB_DATABASE'),
-        'username'  => getenv('DB_USERNAME'),
-        'password'  => getenv('DB_PASSWORD')
+        'driver'    => 'mysql',
+        'host'      => 'localhost',
+        'port'      => 3306,
+        'prefix'    => 'prefix_',
+        'collation' => 'utf8_unicode_ci',
+        'charset'   => 'utf8',
+        'database'  => 'dummy',
+        'username'  => 'user',
+        'password'  => 'user_pass'
     ],
     'mongo' => []
 ];

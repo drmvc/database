@@ -2,9 +2,7 @@
 
 namespace DrMVC\Database;
 
-use DrMVC\Config;
 use DrMVC\Config\ConfigInterface;
-use DrMVC\Database;
 use DrMVC\Database\Drivers\QueryInterface;
 
 class Model implements ModelInterface
@@ -15,72 +13,79 @@ class Model implements ModelInterface
     private $_instance;
 
     /**
-     * Default database
+     * Default connection name
      * @var string
      */
-    protected $database = Database::DEFAULT_DATABASE;
+    protected $connection = Database::DEFAULT_CONNECTION;
 
     /**
      * Name of collection for query
-     * @var string
+     * @var string|null
      */
     protected $collection;
 
     /**
      * Model constructor.
-     * @param ConfigInterface $config
+     * @param   ConfigInterface $config
      */
-    public function __construct(ConfigInterface $config = null)
+    public function __construct(ConfigInterface $config)
     {
-        if (null === $config) {
-            $config = new Config();
-            $config
-                ->set(
-                    Database::DEFAULT_DATABASE,
-                    [
-                        'driver' => 'sqlite',
-                        'path' => '/tmp/sqlite.db'
-                    ]
-                );
+        // get current connection
+        $connection = $this->getConnection();
+        // Get config of required connection
+        $config_db = $config->get($connection);
+        try {
+            if (null === $config_db) {
+                throw new Exception("Connection \"$connection\" is not found in database config");
+            }
+        } catch (Exception $e) {
+            // __constructor
         }
 
+        // Create database object with config from above
+        $database = new Database($config_db);
+
+        // Get current collection name
+        $collection = $this->getCollection();
+        // Extract instance created by driver and put collection name
+        $instance = $database->getInstance($collection);
+
+        // Keep driver's instance as local parameter
+        $this->setInstance($instance);
+    }
+
+    /**
+     * Get current database name
+     *
+     * @return string
+     */
+    public function getConnection(): string
+    {
+        return $this->connection;
+    }
+
+    /**
+     * Get current collection
+     *
+     * @return  string|null
+     */
+    public function getCollection()
+    {
+        $collection = $this->collection;
         try {
-            $collection = $this->getCollection();
             if (null === $collection) {
                 throw new Exception('Collection is not set');
             }
         } catch (Exception $e) {
             // __constructor
         }
-
-        // Extract config of current database
-        $configDB = $config->get($this->getDatabase());
-
-        // Create database object with correct config
-        $database = new Database($configDB);
-
-        // Save instance as model by instance from database
-        $this->setInstance($database->getInstance());
+        return $collection;
     }
 
     /**
-     * @return string
-     */
-    public function getDatabase(): string
-    {
-        return $this->database;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCollection(): string
-    {
-        return $this->collection;
-    }
-
-    /**
-     * @param QueryInterface $instance
+     * Set database instance
+     *
+     * @param   QueryInterface $instance
      */
     public function setInstance(QueryInterface $instance)
     {
@@ -88,6 +93,8 @@ class Model implements ModelInterface
     }
 
     /**
+     * Get database instance
+     *
      * @return QueryInterface
      */
     public function getInstance(): QueryInterface

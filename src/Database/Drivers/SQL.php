@@ -67,9 +67,9 @@ abstract class SQL extends Driver
      * Insert in database and return of inserted element
      *
      * @param   array $data array of columns and values
-     * @return  int
+     * @return  mixed
      */
-    public function insert(array $data): int
+    public function insert(array $data)
     {
         // Current table
         $table = $this->getConnection();

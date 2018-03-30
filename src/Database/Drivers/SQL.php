@@ -30,22 +30,19 @@ abstract class SQL extends Driver
     /**
      * Run a select statement against the database
      *
-     * @param  string $query
-     * @param  array $data
-     * @return array|object
+     * @param   string $query
+     * @param   array $data
+     * @return  array|object
      */
-    public function select($query, array $data = [])
+    public function select(string $query, array $data = [])
     {
         // Set statement
         $statement = $this->_connection->prepare($query);
 
         // Parse parameters from array
         foreach ($data as $key => $value) {
-            if (\is_int($value)) {
-                $statement->bindValue($key, $value, \PDO::PARAM_INT);
-            } else {
-                $statement->bindValue($key, $value);
-            }
+            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $statement->bindValue($key, $value, $value_type);
         }
 
         // Execute the statement
@@ -61,7 +58,7 @@ abstract class SQL extends Driver
      * @param   string $query
      * @return  mixed
      */
-    public function exec($query)
+    public function exec(string $query)
     {
         return $this->_connection->exec($query);
     }
@@ -69,27 +66,78 @@ abstract class SQL extends Driver
     /**
      * Insert in database and return of inserted element
      *
-     * @param  array $data array of columns and values
-     * @return int
+     * @param   array $data array of columns and values
+     * @return  int
      */
     public function insert(array $data): int
     {
         // Current table
         $table = $this->getConnection();
 
+        // Generate array of fields for insert
         $fieldNames = implode(',', array_keys($data));
-        $fieldValues = ':' . implode(', :', array_keys($data));
 
-        $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldValues)");
+        // Generate line with data for update
+        $fieldDetails = !empty($data)
+            ? $fieldDetails = $this->genFields($data)
+            : '';
 
+        // Prepare query
+        $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
+
+        // Bind field values
         foreach ($data as $key => $value) {
-            $statement->bindValue(":$key", $value);
+            $statement->bindValue(":field_$key", $value);
         }
 
+        // Execute operation
         $statement->execute();
+
+        // Return ID of inserted element
         return $this->_connection->lastInsertId();
+        // TODO: Need to add ability to set the name of ID field (not only "id")
     }
 
+    /**
+     * Generate the line by provided keys
+     *
+     * @param   array $array array with data
+     * @param   string $glue by this glue need merge items
+     * @param   string $name name of field for PDO->bindValue
+     * @return  string
+     */
+    private function genLine(array $array, string $glue, string $name): string
+    {
+        $line = '';
+        $i = 0;
+        foreach ($array as $key => $value) {
+            $line .= (($i !== 0) ? null : $glue) . "$key = :${name}_$key";
+            $i = 1;
+        }
+        return $line;
+    }
+
+    /**
+     * Generate set of fields
+     *
+     * @param   array $array
+     * @return  string
+     */
+    private function genFields(array $array): string
+    {
+        return $this->genLine($array, ', ', 'field');
+    }
+
+    /**
+     * Generate WHERE line
+     *
+     * @param   array $array
+     * @return  string
+     */
+    private function genWhere(array $array): string
+    {
+        return $this->genLine($array, ' AND ', 'where');
+    }
 
     /**
      * Update method
@@ -103,39 +151,33 @@ abstract class SQL extends Driver
         // Current table
         $table = $this->getConnection();
 
-        $fieldDetails = null;
-        foreach ($data as $key => $value) {
-            $fieldDetails .= "$key = :field_$key,";
-        }
-        $fieldDetails = rtrim($fieldDetails, ',');
+        // Generate line with data for update
+        $fieldDetails = !empty($data)
+            ? $fieldDetails = $this->genFields($data)
+            : '';
 
-        $whereDetails = null;
-        $i = 0;
-        foreach ($where as $key => $value) {
-            if ($i === 0) {
-                $whereDetails .= "$key = :where_$key";
-            } else {
-                $whereDetails .= " AND $key = :where_$key";
-            }
-            $i++;
-        }
-        $whereDetails = ltrim($whereDetails, ' AND ');
+        // Generate where line
+        $whereDetails = !empty($where)
+            ? ' WHERE ' . $this->genWhere($where)
+            : '';
 
-        if (!empty($where)) {
-            $whereDetails = ' WHERE ' . $whereDetails;
-        }
-
+        // Prepare query
         $statement = $this->_connection->prepare("UPDATE $table SET $fieldDetails $whereDetails");
 
+        // Bind field values
         foreach ($data as $key => $value) {
             $statement->bindValue(":field_$key", $value);
         }
 
+        // Bind where values
         foreach ($where as $key => $value) {
             $statement->bindValue(":where_$key", $value);
         }
 
+        // Execute operation
         $statement->execute();
+
+        // Return count of affected rows
         return $statement->rowCount();
     }
 
@@ -150,24 +192,24 @@ abstract class SQL extends Driver
         // Current table
         $table = $this->getConnection();
 
-        $whereDetails = null;
-        $i = 0;
-        foreach ($where as $key => $value) {
-            // Parse where array
-            $whereDetails .= ($i === 0)
-                ? "$key = :where_$key"
-                : " AND $key = :where_$key";
-            // Increment
-            $i++;
-        }
-        $whereDetails = ltrim($whereDetails, ' AND ');
-        $statement = $this->_connection->prepare("DELETE FROM $table WHERE $whereDetails");
+        // Generate where line
+        $whereDetails = !empty($where)
+            ? ' WHERE ' . $this->genWhere($where)
+            : '';
 
+        // Prepare query
+        $statement = $this->_connection->prepare("DELETE FROM $table $whereDetails");
+
+        // Bind where values
         foreach ($where as $key => $value) {
             $statement->bindValue(":where_$key", $value);
         }
 
-        return $statement->execute();
+        // Execute operation
+        $statement->execute();
+
+        // Return count of affected rows
+        return $statement->rowCount();
     }
 
     /**
@@ -180,6 +222,7 @@ abstract class SQL extends Driver
         // Current table
         $table = $this->getConnection();
 
+        // Exec the truncate command
         return $this->exec("TRUNCATE TABLE $table");
     }
 }

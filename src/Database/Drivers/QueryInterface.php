@@ -11,7 +11,7 @@ interface QueryInterface
      * @param   array $data
      * @return  array|object
      */
-    public function select($query, array $data);
+    public function select(string $query, array $data);
 
     /**
      * Exec query without return, create table for example
@@ -19,7 +19,7 @@ interface QueryInterface
      * @param   string $query
      * @return  mixed
      */
-    public function exec($query);
+    public function exec(string $query);
 
     /**
      * Update some data in database

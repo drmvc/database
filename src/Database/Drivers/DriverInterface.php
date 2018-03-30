@@ -5,13 +5,13 @@ namespace DrMVC\Database\Drivers;
 interface DriverInterface
 {
     /**
-     * @return mixed
+     * @return  mixed
      */
     public function getConnection();
 
     /**
-     * @param $connection
-     * @return DriverInterface
+     * @param   $connection
+     * @return  DriverInterface
      */
     public function setConnection($connection): DriverInterface;
 }

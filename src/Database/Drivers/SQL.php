@@ -79,7 +79,7 @@ abstract class SQL extends Driver
 
         // Generate line with data for update
         $fieldDetails = !empty($data)
-            ? $fieldDetails = $this->genFields($data)
+            ? $this->genFields($data)
             : '';
 
         // Prepare query
@@ -153,7 +153,7 @@ abstract class SQL extends Driver
 
         // Generate line with data for update
         $fieldDetails = !empty($data)
-            ? $fieldDetails = $this->genFields($data)
+            ? $this->genFields($data)
             : '';
 
         // Generate where line

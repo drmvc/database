@@ -1,10 +1,12 @@
-# DrMVC Database
-
 [![Latest Stable Version](https://poser.pugx.org/drmvc/database/v/stable)](https://packagist.org/packages/drmvc/database)
 [![Build Status](https://travis-ci.org/drmvc/database.svg?branch=master)](https://travis-ci.org/drmvc/database)
 [![Total Downloads](https://poser.pugx.org/drmvc/database/downloads)](https://packagist.org/packages/drmvc/database)
 [![License](https://poser.pugx.org/drmvc/database/license)](https://packagist.org/packages/drmvc/database)
 [![PHP 7 ready](https://php7ready.timesplinter.ch/drmvc/database/master/badge.svg)](https://travis-ci.org/drmvc/database)
+[![Code Climate](https://codeclimate.com/github/drmvc/database/badges/gpa.svg)](https://codeclimate.com/github/drmvc/database)
+[![Scrutinizer CQ](https://scrutinizer-ci.com/g/drmvc/database/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/drmvc/database/)
+
+# DrMVC\Database
 
 Advanced module for work with databases and models.
 
@@ -19,7 +21,7 @@ This module uses an ORM similar concept of work, but if you need a more convenie
 ## Supported databases
 
 * PostgreSQL, Mysql, SQLite and any other PDO databases
-* MongoDB (PHP5 and PHP7 versions)
+* MongoDB (PHP7 version only)
 
 ## How to use
 
@@ -42,17 +44,17 @@ $data = ['name' => 'somename', 'email' => 'someemail'];
 $where = ['name' => 'somename', 'email' => 'someemail'];
 
 // Run some query and return the result
-$model->db->select("SELECT * FROM users WHERE name = :name AND email = :email", $where);
+$model->elect("SELECT * FROM users WHERE name = :name AND email = :email", $where);
 
 // Run query without responce
-$model->db->select("SELECT * FROM users");
+$model->select("SELECT * FROM users");
 
 // Insert new data into `users` table
-$model->db->insert('users', $data);
+$model->insert('users', $data);
 
 // Update some data inside table
-$model->db->update('users', $data, $where);
+$model->update('users', $data, $where);
 
 // Delete data from table
-$model->db->delete('users', $where);
+$model->delete('users', $where);
 ```

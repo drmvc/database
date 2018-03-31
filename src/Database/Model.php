@@ -30,6 +30,27 @@ class Model implements ModelInterface
      */
     public function __construct(ConfigInterface $config)
     {
+        // Create database object with config from above
+        $config_db = $this->getConfigDB($config);
+        $database = new Database($config_db);
+
+        // Get current collection name
+        $collection = $this->getCollection();
+        // Extract instance created by driver and put collection name
+        $instance = $database->getInstance($collection);
+
+        // Keep driver's instance as local parameter
+        $this->setInstance($instance);
+    }
+
+    /**
+     * Extract configuration of current database
+     *
+     * @param   ConfigInterface $config
+     * @return  ConfigInterface
+     */
+    private function getConfigDB(ConfigInterface $config): ConfigInterface
+    {
         // get current connection
         $connection = $this->getConnection();
         // Get config of required connection
@@ -41,17 +62,7 @@ class Model implements ModelInterface
         } catch (Exception $e) {
             // __constructor
         }
-
-        // Create database object with config from above
-        $database = new Database($config_db);
-
-        // Get current collection name
-        $collection = $this->getCollection();
-        // Extract instance created by driver and put collection name
-        $instance = $database->getInstance($collection);
-
-        // Keep driver's instance as local parameter
-        $this->setInstance($instance);
+        return $config_db;
     }
 
     /**

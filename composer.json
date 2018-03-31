@@ -24,6 +24,7 @@
   ],
   "require": {
     "php": "^7.0",
+    "danielstjules/stringy": "~3.1.0",
     "drmvc/config": "^3.0.0"
   },
   "require-dev": {

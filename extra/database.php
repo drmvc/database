@@ -1,24 +1,19 @@
 <?php
 /**
- * About MongoDB driver in details
- * @link http://nl1.php.net/manual/en/mongodb-driver-manager.construct.php
- *
- * More details about authentication:
- * @link http://nl.php.net/manual/en/mongo.connecting.auth.php
- *
- * About connection string ('url' parameter)
- * @link https://docs.mongodb.com/manual/reference/connection-string/#connections-connection-options
+ * More details about PDO-MySQL driver:
+ * @link http://php.net/manual/en/ref.pdo-mysql.connection.php
  */
 
 return [
     'default' => [
-        'driver'    => 'mongodb',
-        'url'       => '127.0.0.1:27017/database',
+        'driver'    => 'mysql',
+        'host'      => '127.0.0.1',         // optional, default: 127.0.0.1
+        'port'      => '3306',              // optional, default: 3306
         'username'  => 'admin',
         'password'  => 'admin_pass',
-        'prefix'    => 'prefix_',
-        'driver_options' => [
-            'pem_file' => __DIR__ . '/ssl/client.pem',
-        ]
+        'dbname'    => 'database',
+        'prefix'    => 'prefix_',           // optional, default: is empty
+        'collation' => 'utf8_unicode_ci',   // optional, default: utf8_unicode_ci
+        'charset'   => 'utf8',              // optional, default: utf8
     ],
 ];

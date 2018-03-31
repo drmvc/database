@@ -8,15 +8,7 @@ use DrMVC\Database\Model;
 
 class Test extends Model
 {
-    protected $collection = 'test';
-
-    public function __construct(ConfigInterface $config = null)
-    {
-        // Unfortunately this part yet is not ready, so you can use temporary solution
-        $config = new Config();
-        $config->load(__DIR__ . '/database.php', 'database');
-        parent::__construct($config);
-    }
+    //protected $collection = 'test';
 
     public function sql_select()
     {

@@ -163,7 +163,7 @@ abstract class SQL extends Driver
     private function genUpdate(array $data, array $where): string
     {
         // Current table
-        $table = $this->getConnection();
+        $table = $this->getCollection();
 
         // Generate line with data for update
         $fieldDetails = !empty($data)

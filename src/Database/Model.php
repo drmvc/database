@@ -4,6 +4,7 @@ namespace DrMVC\Database;
 
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
+use Stringy\Stringy;
 
 class Model implements ModelInterface
 {
@@ -81,21 +82,31 @@ class Model implements ModelInterface
     }
 
     /**
+     * Convert class name for snake case
+     *
+     * @return  string
+     */
+    private function classToShake(): string
+    {
+        $className = \get_class($this);
+        $classArray = explode('\\', $className);
+        $class = end($classArray);
+        try {
+            $class = Stringy::create($class)->underscored();
+        } catch (\InvalidArgumentException $e) {
+            new Exception('Invalid argument provided');
+        }
+        return $class;
+    }
+
+    /**
      * Get current collection
      *
      * @return  string|null
      */
     public function getCollection()
     {
-        $collection = $this->collection;
-        try {
-            if (null === $collection) {
-                throw new Exception('Collection is not set');
-            }
-        } catch (Exception $e) {
-            // __constructor
-        }
-        return $collection;
+        return $this->collection ?? $this->classToShake();
     }
 
     /**

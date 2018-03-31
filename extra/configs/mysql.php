@@ -12,7 +12,7 @@ return [
         'username'  => 'admin',
         'password'  => 'admin_pass',
         'dbname'    => 'database',
-        'prefix'    => 'prefix_',
+        'prefix'    => 'prefix_',           // optional, default: is empty
         'collation' => 'utf8_unicode_ci',   // optional, default: utf8_unicode_ci
         'charset'   => 'utf8',              // optional, default: utf8
     ],

@@ -1,9 +1,4 @@
-.git
-nbproject
-.kdev4
-.idea
-.kate-swp
-~
-.directory
+/.idea/
 /composer.lock
 /vendor/
+/extra/sqlite.db

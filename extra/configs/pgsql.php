@@ -18,7 +18,7 @@ return [
         'username'  => 'admin',
         'password'  => 'admin_pass',
         'dbname'    => 'database',
-        'prefix'    => 'prefix_',
+        'prefix'    => 'prefix_',           // optional, default: is empty
         'client_encoding' => 'UTF8'         // optional, default: your local configuration
     ],
 ];

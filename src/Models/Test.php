@@ -15,7 +15,7 @@ class Test extends Model
 
     public function test_insert()
     {
-        $data = ['test' => 'zzz'];
+        $data = ['name' => 'zzz'];
         return $this->insert($data);
     }
 }

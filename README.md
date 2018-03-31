@@ -67,9 +67,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $config = new \DrMVC\Config();
 $config->load(__DIR__ . '/database.php', 'database');
 
-// Initiate model
-$model = new \DrMVC\Database\Model($config->get('database'));
-$model->
+// Initiate model with collection with what we want work, 'test' for example
+$model = new \DrMVC\Database\Model($config->get('database'), 'test');
 
 // Direct call query via model
 $test = $model->select('SELECT * FROM prefix_test');

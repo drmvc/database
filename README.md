@@ -25,36 +25,133 @@ This module uses an ORM similar concept of work, but if you need a more convenie
 
 ## How to use
 
-You can write your custom method inside model, for example:
+### Database configs
+
+You can find few examples of database config files with description
+and links [here](extra/configs/).
+
+Example of MySQL `database.php` config file:
 
 ```php
-public function someMethod() {
-    return $this->db->select("SELECT * FROM table");
+<?php
+return [
+    'default' => [
+        'driver'    => 'mysql',
+        'host'      => '127.0.0.1',
+        'port'      => '3306',
+        'username'  => 'admin',
+        'password'  => 'admin_pass',
+        'dbname'    => 'database',
+        'prefix'    => 'prefix_',
+        'collation' => 'utf8_unicode_ci',
+        'charset'   => 'utf8',
+    ],
+];
+```
+
+Where:
+
+* default - name of database connection which must be used by default
+* driver - any driver from [this](#supported-databases) list
+* prefix - prefix of tables names, required by almost all methods (but not in `select()` or `exec()`)
+
+### Basic example
+
+Source code of `example.php` file:
+
+```php
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Load configuration of current database instance
+$config = new \DrMVC\Config();
+$config->load(__DIR__ . '/database.php', 'database');
+
+// Initiate model
+$model = new \DrMVC\Database\Model($config->get('database'));
+$model->
+
+// Direct call query via model
+$test = $model->select('SELECT * FROM prefix_test');
+
+// Advanced example of select usage
+$where = ['name' => 'somename', 'email' => 'someemail'];
+$test = $model->select("SELECT * FROM prefix_users WHERE name = :name AND email = :email", $where);
+
+// Call insert method
+$data = ['key' => 'value', 'key2' => 'value2'];
+$test = $model->insert($data);
+
+// Update some data in table
+$data = ['key' => 'value', 'key2' => 'value2'];
+$where = ['id' => 111];
+$test = $model->update($data, $where);
+
+// Execute query in silent mode
+$model->exec('create table example_table');
+```
+
+### OOP style
+
+```php
+<?php
+
+namespace MyApp\Models;
+
+use DrMVC\Database\Model;
+
+class Test extends Model
+{
+    protected $collection = 'test';
+
+    public function __construct(ConfigInterface $config = null)
+    {
+        // Unfortunately this part yet is not ready, so you can use temporary solution
+        $config = new Config();
+        $config->load(__DIR__ . '/database.php', 'database');
+        parent::__construct($config);
+    }
+
+    public function sql_select()
+    {
+        return $this->select('SELECT * FROM prefix_test');
+    }
+
+    public function sql_insert(array $data = ['key' => 'value', 'key2' => 'value2'])
+    {
+        return $this->insert($data);
+    }
+
+    public function sql_update(int $id)
+    {
+        $data = ['key' => 'value', 'key2' => 'value2'];
+        $where = ['id' => $id];
+        return $this->update($data, $where);
+    }
+
+    public function sql_delete(array $data)
+    {
+        return $this->delete($data);
+    }
 }
 ```
 
-Or work with system calls:
+## Supported databases
 
-```php
-// Model object
-$model = new Model();
+For now only databases from list below is supported, but support of
+some new databases will be added soon.
 
-// Dummy data
-$data = ['name' => 'somename', 'email' => 'someemail'];
-$where = ['name' => 'somename', 'email' => 'someemail'];
+| Driver  | Database |
+|---------|----------|
+| mysql   | MySQL and MariaDB |
+| pgsql   | PostgreSQL |
+| sqlite  | SQLite (file and memory modes) |
+| mongodb | MongoDB (php 7.0 and above only) |
 
-// Run some query and return the result
-$model->elect("SELECT * FROM users WHERE name = :name AND email = :email", $where);
+# Links
 
-// Run query without responce
-$model->select("SELECT * FROM users");
-
-// Insert new data into `users` table
-$model->insert('users', $data);
-
-// Update some data inside table
-$model->update('users', $data, $where);
-
-// Delete data from table
-$model->delete('users', $where);
-```
+* [DrMVC project website](https://drmvc.com/)
+* [PDO MySQL](http://php.net/manual/en/ref.pdo-mysql.connection.php)
+* [PDO PostgreSQL](http://php.net/manual/en/ref.pdo-pgsql.connection.php)
+* [PDO SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php)
+* [MongoDB](http://php.net/manual/en/set.mongodb.php)

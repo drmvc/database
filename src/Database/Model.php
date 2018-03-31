@@ -27,15 +27,20 @@ class Model implements ModelInterface
     /**
      * Model constructor.
      * @param   ConfigInterface $config
+     * @param   string $collection name of active collection
      */
-    public function __construct(ConfigInterface $config)
+    public function __construct(ConfigInterface $config, string $collection = null)
     {
         // Create database object with config from above
         $config_db = $this->getConfigDB($config);
         $database = new Database($config_db);
 
-        // Get current collection name
-        $collection = $this->getCollection();
+        // If collection name is not provided
+        if (null === $collection) {
+            // Get current collection name
+            $collection = $this->getCollection();
+        }
+
         // Extract instance created by driver and put collection name
         $instance = $database->getInstance($collection);
 
@@ -91,6 +96,18 @@ class Model implements ModelInterface
             // __constructor
         }
         return $collection;
+    }
+
+    /**
+     * Set name of collection for queries
+     *
+     * @param   null|string $collection
+     * @return  ModelInterface
+     */
+    public function setCollection(string $collection): ModelInterface
+    {
+        $this->collection = $collection;
+        return $this;
     }
 
     /**

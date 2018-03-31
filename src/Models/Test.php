@@ -2,20 +2,41 @@
 
 namespace DrMVC\Models;
 
+use DrMVC\Config;
+use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Model;
 
 class Test extends Model
 {
     protected $collection = 'test';
 
-    public function test_sql_select()
+    public function __construct(ConfigInterface $config = null)
     {
-        return $this->select('select * from prefix_test');
+        // Unfortunately this part yet is not ready, so you can use temporary solution
+        $config = new Config();
+        $config->load(__DIR__ . '/database.php', 'database');
+        parent::__construct($config);
     }
 
-    public function test_insert()
+    public function sql_select()
     {
-        $data = ['name' => 'zzz'];
+        return $this->select('SELECT * FROM prefix_test');
+    }
+
+    public function sql_insert(array $data = ['key' => 'value', 'key2' => 'value2'])
+    {
         return $this->insert($data);
+    }
+
+    public function sql_update(int $id)
+    {
+        $data = ['key' => 'value', 'key2' => 'value2'];
+        $where = ['id' => $id];
+        return $this->update($data, $where);
+    }
+
+    public function sql_delete(array $data)
+    {
+        return $this->delete($data);
     }
 }

@@ -1,21 +1,24 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Load configuration of current database instance
 $config = new \DrMVC\Config();
 $config->load(__DIR__ . '/database.php', 'database');
-print_r($config);
 
-$model = new \DrMVC\Models\Test($config->get('database'));
-print_r($model);
+// Initiate model with collection with what we want work, 'test' for example
+$model = new \DrMVC\Database\Model($config->get('database'), 'test');
 
-// Direct call from model
-$test = $model->select('select * from prefix_test;');
-print_r($test);
+// Direct call query via model
+$test = $model->select('SELECT * FROM prefix_test');
 
-// Call model's method of select
-$test = $model->test_select();
-print_r($test);
+// Call insert method
+$data = ['key' => 'value', 'key2' => 'value2'];
+$test = $model->insert($data);
 
-// Call model's method of insert
-//$test = $model->test_insert();
-print_r($test);
+// Update some data in table
+$data = ['key' => 'value', 'key2' => 'value2'];
+$where = ['id' => 111];
+$test = $model->update($data, $where);
+
+// Execute query in silent mode
+$model->exec('create table example_table');

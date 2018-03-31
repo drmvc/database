@@ -14,6 +14,14 @@ interface ModelInterface extends QueryInterface
     public function getConnection(): string;
 
     /**
+     * Set name of collection for queries
+     *
+     * @param   null|string $collection
+     * @return  ModelInterface
+     */
+    public function setCollection(string $collection): ModelInterface;
+
+    /**
      * Get current collection
      *
      * @return  string|null

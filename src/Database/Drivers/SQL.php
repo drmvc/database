@@ -74,6 +74,12 @@ abstract class SQL extends Driver
         return $this->getConnection()->exec($query);
     }
 
+    /**
+     * Generate INSERT query by array
+     *
+     * @param   array $data
+     * @return  string
+     */
     private function genInsert(array $data): string
     {
         // Current table
@@ -157,7 +163,14 @@ abstract class SQL extends Driver
         return $this->genLine($array, ' AND ', 'where');
     }
 
-    private function getUpdate(array $data, array $where): string
+    /**
+     * Generate update query
+     *
+     * @param   array $data
+     * @param   array $where
+     * @return  string
+     */
+    private function genUpdate(array $data, array $where): string
     {
         // Current table
         $table = $this->getConnection();
@@ -185,7 +198,7 @@ abstract class SQL extends Driver
     public function update(array $data, array $where)
     {
         // Prepare query
-        $query = $this->getUpdate($data, $where);
+        $query = $this->genUpdate($data, $where);
         $statement = $this->getConnection()->prepare($query);
 
         // Bind field values

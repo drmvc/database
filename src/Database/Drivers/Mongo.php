@@ -11,6 +11,9 @@ use MongoDB\BSON\ObjectID;
  */
 class Mongo extends NoSQL
 {
+    const DEFAULT_HOST = 'localhost';
+    const DEFAULT_PORT = '27017';
+
 //    /**
 //     * DMongoDB constructor
 //     *

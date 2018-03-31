@@ -12,11 +12,6 @@ abstract class Driver implements DriverInterface, QueryInterface
     protected $_connection;
 
     /**
-     * @var string
-     */
-    private $_dsn;
-
-    /**
      * @var ConfigInterface
      */
     private $_config;
@@ -36,7 +31,7 @@ abstract class Driver implements DriverInterface, QueryInterface
     public function __construct(ConfigInterface $config, string $collection)
     {
         $this->setConfig($config);
-        $this->setCollection($this->getConfig()->get('prefix') . $collection);
+        $this->setCollection($this->getParam('prefix') . $collection);
     }
 
     /**
@@ -52,6 +47,33 @@ abstract class Driver implements DriverInterface, QueryInterface
      * @return  DriverInterface
      */
     abstract public function disconnect(): DriverInterface;
+
+    /**
+     * Generate DSN by parameters in config
+     *
+     * @param $config
+     * @return string
+     */
+    abstract protected function genDsn($config): string;
+
+    /**
+     * Generate DSN by data in config
+     *
+     * @return  string
+     */
+    public function getDsn(): string
+    {
+        // Get all parameters
+        $config = $this->getConfig()->get();
+
+        // Get driver of connection
+        $driver = strtolower($config['driver']);
+
+        // Generate DSN by parameters in config
+        $dsn = $this->genDsn($config);
+
+        return "$driver:$dsn";
+    }
 
     /**
      * @param   string $collection
@@ -72,6 +94,8 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
+     * Save current config
+     *
      * @param   ConfigInterface $config
      * @return  DriverInterface
      */
@@ -82,6 +106,8 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
+     * Return config object
+     *
      * @return  ConfigInterface
      */
     public function getConfig(): ConfigInterface
@@ -90,24 +116,20 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
-     * @param   string $dsn
-     * @return  DriverInterface
+     * Get some parameter from config by keyname
+     *
+     * @param   string $param
+     * @return  mixed
      */
-    public function setDsn(string $dsn): DriverInterface
+    public function getParam(string $param)
     {
-        $this->_dsn = $dsn;
-        return $this;
+        $result = $this->getConfig()->get($param);
+        return $result ?? null;
     }
 
     /**
-     * @return  string
-     */
-    public function getDsn(): string
-    {
-        return $this->_dsn;
-    }
-
-    /**
+     * Save connection with database via PDO drive
+     *
      * @param   \PDO $connection
      * @return  DriverInterface
      */
@@ -118,6 +140,8 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
+     * Get current PDO connection
+     *
      * @return  \PDO
      */
     public function getConnection(): \PDO

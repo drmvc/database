@@ -14,7 +14,7 @@ interface QueryInterface
     public function select(string $query, array $data);
 
     /**
-     * Exec query without return, create table for example
+     * Execute some query in silence mode, create table for example
      *
      * @param   string $query
      * @return  mixed

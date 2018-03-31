@@ -87,7 +87,7 @@ class Model implements ModelInterface
      *
      * @param   QueryInterface $instance
      */
-    public function setInstance(QueryInterface $instance)
+    private function setInstance(QueryInterface $instance)
     {
         $this->_instance = $instance;
     }
@@ -102,4 +102,33 @@ class Model implements ModelInterface
         return $this->_instance;
     }
 
+    public function update(array $data, array $where = [])
+    {
+        return $this->getInstance()->update($data, $where);
+    }
+
+    public function delete(array $where)
+    {
+        return $this->getInstance()->delete($where);
+    }
+
+    public function exec(string $query)
+    {
+        return $this->getInstance()->exec($query);
+    }
+
+    public function insert(array $data)
+    {
+        return $this->getInstance()->insert($data);
+    }
+
+    public function select(string $query, array $data = [])
+    {
+        return $this->getInstance()->select($query, $data);
+    }
+
+    public function truncate()
+    {
+        return $this->getInstance()->truncate();
+    }
 }

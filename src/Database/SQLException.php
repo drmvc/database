@@ -3,10 +3,10 @@
 namespace DrMVC\Database;
 
 /**
- * Class Exception
+ * Class SQLException
  * @package DrMVC\Database
  */
-class Exception extends \Exception
+class SQLException extends \PDOException
 {
     public function __construct(string $message = '', int $code = 0, \Throwable $previous = null)
     {

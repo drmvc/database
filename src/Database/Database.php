@@ -34,7 +34,8 @@ class Database implements DatabaseInterface
     public function getInstance(string $collection): QueryInterface
     {
         $class = $this->getDriver();
-        return new $class($this->getConfig(), $collection);
+        $instance = new $class($this->getConfig(), $collection);
+        return $instance->connect();
     }
 
     /**

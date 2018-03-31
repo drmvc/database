@@ -2,45 +2,78 @@
 
 namespace DrMVC\Database\Drivers;
 
-use DrMVC\Config\ConfigInterface;
+use DrMVC\Database\SQLException;
 
 class Mysql extends SQL
 {
-    const DEFAULT_HOST = 'localhost';
-    const DEFAULT_PORT = 3306;
+    const DEFAULT_HOST = '127.0.0.1';
+    const DEFAULT_PORT = '3306';
+    const DEFAULT_CHARSET = 'utf8';
+    const DEFAULT_COLLATION = 'utf8_unicode_ci';
 
-    public function __construct(ConfigInterface $config, string $collection)
+    /**
+     * @link https://secure.php.net/manual/en/ref.pdo-mysql.connection.php
+     *
+     * The PDO_MYSQL Data Source Name (DSN) is composed of the following elements:
+     */
+    const AVAILABLE_ELEMENTS = [
+        'host',
+        'port',
+        'dbname',
+        'unix_socket'
+    ];
+
+    /**
+     * Generate DSN by parameters in config
+     *
+     * @param   array $config
+     * @return  string
+     */
+    public function genDsn($config): string
     {
-        parent::__construct($config, $collection);
-        $db_host = $this->getHost();
-        $db_port = $this->getPort();
-        $db_auth = $this->getAuth();
-        $db_driv = $this->getConfig()->get('driver');
-        $db_name = $this->getConfig()->get('database');
-
-        $dsn = "$db_driv://$db_auth$db_host:$db_port/$db_name";
-
-        $this->setDsn($dsn);
+        // Parse config
+        $dsn = '';
+        foreach ($config as $key => $value) {
+            if (\in_array($key, self::AVAILABLE_ELEMENTS, false)) {
+                $dsn .= "$key=$value;";
+            }
+        }
+        return $dsn;
     }
 
-    private function getHost(): string
+    /**
+     * Initiate connection to database
+     *
+     * @return  DriverInterface
+     */
+    public function connect(): DriverInterface
     {
-        $host = $this->getConfig()->get('host');
-        return $host ?? self::DEFAULT_HOST;
+        $connection = null;
+        try {
+            $connection = new \PDO(
+                $this->getDsn(),
+                $this->getParam('username'),
+                $this->getParam('password'),
+                $this->getOptions()
+            );
+        } catch (SQLException $e) {
+            // __construct
+        }
+
+        $this->setConnection($connection);
+        return $this;
     }
 
-    private function getPort(): int
+    private function getOptions(): array
     {
-        $port = $this->getConfig()->get('port');
-        return $port ?? self::DEFAULT_PORT;
-    }
+        // Current charset
+        $charset = $this->getParam('charset') ?? self::DEFAULT_CHARSET;
 
-    private function getAuth(): string
-    {
-        $user = $this->getConfig()->get('username');
-        $pass = $this->getConfig()->get('password');
+        // Current collation
+        $collation = $this->getParam('collation') ?? self::DEFAULT_COLLATION;
 
-        return ($user && $pass) ? $user . ':' . $pass . '@' : '';
+        // Return array of options
+        return [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '$charset' COLLATE '$collation'"];
     }
 
 }

@@ -18,35 +18,47 @@ interface DriverInterface
     public function getCollection(): string;
 
     /**
+     * Save current config
+     *
      * @param   ConfigInterface $config
      * @return  DriverInterface
      */
     public function setConfig(ConfigInterface $config): DriverInterface;
 
     /**
+     * Return config object
+     *
      * @return  ConfigInterface
      */
     public function getConfig(): ConfigInterface;
 
     /**
+     * Save connection with database via PDO drive
+     *
      * @param   $connection
      * @return  DriverInterface
      */
     public function setConnection(\PDO $connection): DriverInterface;
 
     /**
+     * Get current PDO connection
+     *
      * @return  \PDO
      */
     public function getConnection(): \PDO;
 
     /**
-     * @param   string $dsn
-     * @return  DriverInterface
-     */
-    public function setDsn(string $dsn): DriverInterface;
-
-    /**
+     * Generate DSN by data in config
+     *
      * @return  string
      */
     public function getDsn(): string;
+
+    /**
+     * Get some parameter from config by keyname
+     *
+     * @param   string $param
+     * @return  mixed
+     */
+    public function getParam(string $param);
 }

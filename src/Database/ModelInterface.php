@@ -4,10 +4,10 @@ namespace DrMVC\Database;
 
 use DrMVC\Database\Drivers\QueryInterface;
 
-interface ModelInterface
+interface ModelInterface extends QueryInterface
 {
     /**
-     * Get current connection name
+     * Get current database name
      *
      * @return string
      */
@@ -19,13 +19,6 @@ interface ModelInterface
      * @return  string|null
      */
     public function getCollection();
-
-    /**
-     * Set database instance
-     *
-     * @param   QueryInterface $instance
-     */
-    public function setInstance(QueryInterface $instance);
 
     /**
      * Get database instance

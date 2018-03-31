@@ -2,15 +2,12 @@
 
 return [
     'default' => [
-        'driver'    => 'mysql',
-        'host'      => 'localhost',
-        'port'      => 3306,
-        'prefix'    => 'prefix_',
-        'collation' => 'utf8_unicode_ci',
-        'charset'   => 'utf8',
-        'database'  => 'dummy',
-        'username'  => 'user',
-        'password'  => 'user_pass'
+        'driver'    => 'pgsql',
+        'host'      => '127.0.0.1',         // optional, default: 127.0.0.1
+        'port'      => '5432',              // optional, default: 5432
+        'username'  => 'admin',
+        'password'  => 'admin_pass',
+        'dbname'    => 'database',
+        'prefix'    => 'prefix_'
     ],
-    'mongo' => []
 ];

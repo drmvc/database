@@ -2,6 +2,8 @@
 
 namespace DrMVC\Database\Drivers;
 
+use DrMVC\Database\SQLException;
+
 abstract class SQL extends Driver
 {
     /**
@@ -11,8 +13,18 @@ abstract class SQL extends Driver
      */
     public function connect(): DriverInterface
     {
-        $connection = new \PDO($this->getDsn());
+        $connection = null;
+        try {
+            $connection = new \PDO(
+                $this->getDsn(),
+                $this->getParam('username'),
+                $this->getParam('password')
+            );
+        } catch (SQLException $e) {
+            // __construct
+        }
         $this->setConnection($connection);
+
         return $this;
     }
 
@@ -67,35 +79,36 @@ abstract class SQL extends Driver
      * Insert in database and return of inserted element
      *
      * @param   array $data array of columns and values
+     * @param   string $id field name of ID which must be returned
      * @return  mixed
      */
-    public function insert(array $data)
+    public function insert(array $data, string $id = null)
     {
         // Current table
-        $table = $this->getConnection();
+        $table = $this->getCollection();
 
         // Generate array of fields for insert
         $fieldNames = implode(',', array_keys($data));
 
         // Generate line with data for update
-        $fieldDetails = !empty($data)
-            ? $this->genFields($data)
-            : '';
+        $fieldDetails = ':' . implode(', :', array_keys($data));
 
         // Prepare query
-        $statement = $this->getConnection()->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
+        $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
 
-        // Bind field values
+        // Bind values
         foreach ($data as $key => $value) {
-            $statement->bindValue(":field_$key", $value);
+            $statement->bindValue(":$key", $value);
         }
 
         // Execute operation
         $statement->execute();
 
-        // Return ID of inserted element
-        return $this->getConnection()->lastInsertId();
-        // TODO: Need to add ability to set the name of ID field (not only "id")
+        return (null !== $id)
+            // Return ID of inserted element
+            ? $this->getConnection()->lastInsertId($id)
+            // Return count of affected rows
+            : $statement->rowCount();
     }
 
     /**

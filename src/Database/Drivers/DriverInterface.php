@@ -35,10 +35,10 @@ interface DriverInterface
     /**
      * Save connection with database via PDO drive
      *
-     * @param   $connection
+     * @param   null|\PDO $connection
      * @return  DriverInterface
      */
-    public function setConnection(\PDO $connection): DriverInterface;
+    public function setConnection($connection): DriverInterface;
 
     /**
      * Get current PDO connection

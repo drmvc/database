@@ -48,7 +48,6 @@ class Mysql extends SQL
      */
     public function connect(): DriverInterface
     {
-        $connection = null;
         try {
             $connection = new \PDO(
                 $this->getDsn(),

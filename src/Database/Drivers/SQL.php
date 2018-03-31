@@ -13,7 +13,6 @@ abstract class SQL extends Driver
      */
     public function connect(): DriverInterface
     {
-        $connection = null;
         try {
             $connection = new \PDO(
                 $this->getDsn(),
@@ -157,9 +156,9 @@ abstract class SQL extends Driver
      *
      * @param  array $data array of columns and values
      * @param  array $where array of columns and values
-     * @return int
+     * @return mixed
      */
-    public function update(array $data, array $where): int
+    public function update(array $data, array $where)
     {
         // Current table
         $table = $this->getConnection();
@@ -198,9 +197,9 @@ abstract class SQL extends Driver
      * Delete rows from database
      *
      * @param   array $where
-     * @return  bool
+     * @return  mixed
      */
-    public function delete(array $where): bool
+    public function delete(array $where)
     {
         // Current table
         $table = $this->getConnection();

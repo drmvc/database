@@ -20,8 +20,15 @@ This module uses an ORM similar concept of work, but if you need a more convenie
 
 ## Supported databases
 
-* PostgreSQL, Mysql, SQLite and any other PDO databases
-* MongoDB (PHP7 version only)
+For now only databases from list below is supported, but support of
+some new databases will be added soon.
+
+| Driver  | Database |
+|---------|----------|
+| mysql   | MySQL and MariaDB |
+| pgsql   | PostgreSQL |
+| sqlite  | SQLite (file and memory modes) |
+| mongodb | MongoDB (php 7.0 and above only) |
 
 ## How to use
 
@@ -134,18 +141,6 @@ class Test extends Model
     }
 }
 ```
-
-## Supported databases
-
-For now only databases from list below is supported, but support of
-some new databases will be added soon.
-
-| Driver  | Database |
-|---------|----------|
-| mysql   | MySQL and MariaDB |
-| pgsql   | PostgreSQL |
-| sqlite  | SQLite (file and memory modes) |
-| mongodb | MongoDB (php 7.0 and above only) |
 
 # Links
 

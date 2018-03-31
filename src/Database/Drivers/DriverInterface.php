@@ -33,19 +33,19 @@ interface DriverInterface
     public function getConfig(): ConfigInterface;
 
     /**
-     * Save connection with database via PDO drive
+     * Save connection with database via driver
      *
-     * @param   null|\PDO $connection
+     * @param   mixed $connection
      * @return  DriverInterface
      */
     public function setConnection($connection): DriverInterface;
 
     /**
-     * Get current PDO connection
+     * Get current connection
      *
-     * @return  \PDO
+     * @return  mixed
      */
-    public function getConnection(): \PDO;
+    public function getConnection();
 
     /**
      * Generate DSN by data in config

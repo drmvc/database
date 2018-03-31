@@ -2,49 +2,163 @@
 
 namespace DrMVC\Database\Drivers;
 
-use DrMVC\Database\Database;
 use MongoDB\BSON\ObjectID;
+use MongoDB\Driver\Exception\InvalidArgumentException;
+use MongoDB\Driver\Exception\RuntimeException;
+use MongoDB\Driver\Manager as MongoManager;
+use DrMVC\Database\Exception;
 
 /**
  * Class for work with modern MongoDB php driver (for PHP >= 7.0)
  * @package DrMVC\Database\Drivers
  */
-class Mongo extends NoSQL
+class Mongodb extends NoSQL
 {
     const DEFAULT_HOST = 'localhost';
     const DEFAULT_PORT = '27017';
 
-//    /**
-//     * DMongoDB constructor
-//     *
-//     * @param string $name
-//     * @param array $config
-//     */
-//    public function __construct($name, array $config)
-//    {
-//        parent::__construct($name, $config);
-//
-//        // Make sure the database is connected
-//        $this->_connection or $this->connect();
-//    }
-//
-//    /**
-//     * Connect via MongoClient driver
-//     */
-//    public function connect()
-//    {
-//        if ($this->_connection) return;
-//
-//        // Auth to database
-//        $userpass = isset($this->_config['username']) && isset($this->_config['password']) ? $this->_config['username'] . ':' . $this->_config['password'] . '@' : null;
-//
-//        // Check if we want to authenticate against a specific database.
-//        $auth_database = isset($this->_config['options']) && !empty($this->_config['options']['database']) ? $this->_config['options']['database'] : null;
-//
-//        // Set connection
-//        $this->_connection = new \MongoDB\Driver\Manager('mongodb://' . $userpass . $this->_config['hostname'] . ':' . $this->_config['port'] . ($auth_database ? '/' . $auth_database : ''));
-//    }
-//
+    /**
+     * @link http://nl1.php.net/manual/en/mongodb-driver-manager.construct.php
+     *
+     * Additional connection string options, which will overwrite any options with
+     * the same name in the uri parameter.
+     */
+    const AVAILABLE_OPTIONS = [
+        'appname',
+        'authMechanism',
+        'authMechanismProperties',
+        'authSource',
+        'canonicalizeHostname',
+        'compressors',
+        'connectTimeoutMS',
+        'gssapiServiceName',
+        'heartbeatFrequencyMS',
+        'journal',
+        'localThresholdMS',
+        'maxStalenessSeconds',
+        'password',
+        'readConcernLevel',
+        'readPreference',
+        'readPreferenceTags',
+        'replicaSet',
+        'retryWrites',
+        'safe',
+        'serverSelectionTimeoutMS',
+        'serverSelectionTryOnce',
+        'slaveOk',
+        'socketCheckIntervalMS',
+        'socketTimeoutMS',
+        'ssl',
+        'username',
+        'w',
+        'wTimeoutMS',
+        'zlibCompressionLevel'
+    ];
+
+    const AVAILABLE_DRIVER_OPTIONS = [
+        'allow_invalid_hostname',
+        'ca_dir',
+        'ca_file',
+        'crl_file',
+        'pem_file',
+        'pem_pwd',
+        'context',
+        'weak_cert_validation'
+    ];
+
+    /**
+     * Initiate connection with database
+     *
+     * @return  DriverInterface
+     */
+    public function connect(): DriverInterface
+    {
+        // URL options
+        $options = $this->getConfig()->get();
+
+        // Driver options
+        $optionsDriver = $options['driver_options']->get();
+
+        try {
+            $connection = new MongoManager(
+                $this->getDsn(),
+                $this->getOptions($options, self::AVAILABLE_OPTIONS),
+                $this->getOptions($optionsDriver, self::AVAILABLE_DRIVER_OPTIONS)
+            );
+            $this->setConnection($connection);
+
+        } catch (RuntimeException $e) {
+            new Exception('Unable to connect');
+        } catch (InvalidArgumentException $e) {
+            new Exception('Invalid argument provided');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Generate DSN by parameters in config
+     *
+     * @param   array $config
+     * @return  string
+     */
+    public function genDsn($config): string
+    {
+        // Get driver of connection
+        $driver = strtolower($config['driver']);
+        $url = $config['url'];
+
+        return "$driver://$url";
+    }
+
+    /**
+     * Generate options array
+     *
+     * @param   array $options
+     * @param   array $allowed
+     * @return  array
+     */
+    private function getOptions(array $options, array $allowed): array
+    {
+        $result = [];
+        foreach ($options as $key => $value) {
+            if (\in_array($key, $allowed, false)) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    public function delete(array $where)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function update(array $data, array $where)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function exec(string $query)
+    {
+        // TODO: Implement exec() method.
+    }
+
+    public function insert(array $data)
+    {
+        // TODO: Implement insert() method.
+    }
+
+    public function select(string $query, array $data)
+    {
+        // TODO: Implement select() method.
+    }
+
+    public function truncate()
+    {
+        // TODO: Implement truncate() method.
+    }
+
 //    /**
 //     * Check if incoming hash is valid mongo object id hash
 //     *

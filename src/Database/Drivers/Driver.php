@@ -42,11 +42,15 @@ abstract class Driver implements DriverInterface, QueryInterface
     abstract public function connect(): DriverInterface;
 
     /**
-     * Disconnect from database
+     * Close database connection
      *
      * @return  DriverInterface
      */
-    abstract public function disconnect(): DriverInterface;
+    public function disconnect(): DriverInterface
+    {
+        $this->setConnection(null);
+        return $this;
+    }
 
     /**
      * Generate DSN by parameters in config
@@ -66,13 +70,8 @@ abstract class Driver implements DriverInterface, QueryInterface
         // Get all parameters
         $config = $this->getConfig()->get();
 
-        // Get driver of connection
-        $driver = strtolower($config['driver']);
-
         // Generate DSN by parameters in config
-        $dsn = $this->genDsn($config);
-
-        return "$driver:$dsn";
+        return $this->genDsn($config);
     }
 
     /**
@@ -128,9 +127,9 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
-     * Save connection with database via PDO drive
+     * Save connection with database via driver
      *
-     * @param   null|\PDO $connection
+     * @param   mixed $connection
      * @return  DriverInterface
      */
     public function setConnection($connection): DriverInterface
@@ -140,7 +139,7 @@ abstract class Driver implements DriverInterface, QueryInterface
     }
 
     /**
-     * Get current PDO connection
+     * Get current connection
      *
      * @return  \PDO
      */

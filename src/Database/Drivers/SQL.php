@@ -19,22 +19,12 @@ abstract class SQL extends Driver
                 $this->getParam('username'),
                 $this->getParam('password')
             );
+            $this->setConnection($connection);
+
         } catch (SQLException $e) {
             // __construct
         }
-        $this->setConnection($connection);
 
-        return $this;
-    }
-
-    /**
-     * Close database connection
-     *
-     * @return  DriverInterface
-     */
-    public function disconnect(): DriverInterface
-    {
-        $this->setConnection(null);
         return $this;
     }
 

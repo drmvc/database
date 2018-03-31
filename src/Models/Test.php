@@ -8,7 +8,7 @@ class Test extends Model
 {
     protected $collection = 'test';
 
-    public function test_select()
+    public function test_sql_select()
     {
         return $this->select('select * from prefix_test');
     }

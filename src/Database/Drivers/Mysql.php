@@ -4,6 +4,10 @@ namespace DrMVC\Database\Drivers;
 
 use DrMVC\Database\SQLException;
 
+/**
+ * Class Mysql for connecto
+ * @package DrMVC\Database\Drivers
+ */
 class Mysql extends SQL
 {
     const DEFAULT_HOST = '127.0.0.1';
@@ -16,7 +20,7 @@ class Mysql extends SQL
      *
      * The PDO_MYSQL Data Source Name (DSN) is composed of the following elements:
      */
-    const AVAILABLE_ELEMENTS = [
+    const AVAILABLE_OPTIONS = [
         'host',
         'port',
         'dbname',
@@ -34,11 +38,15 @@ class Mysql extends SQL
         // Parse config
         $dsn = '';
         foreach ($config as $key => $value) {
-            if (\in_array($key, self::AVAILABLE_ELEMENTS, false)) {
+            if (\in_array($key, self::AVAILABLE_OPTIONS, false)) {
                 $dsn .= "$key=$value;";
             }
         }
-        return $dsn;
+
+        // Get driver of connection
+        $driver = strtolower($config['driver']);
+
+        return "$driver:$dsn";
     }
 
     /**
@@ -55,11 +63,12 @@ class Mysql extends SQL
                 $this->getParam('password'),
                 $this->getOptions()
             );
+            $this->setConnection($connection);
+
         } catch (SQLException $e) {
             // __construct
         }
 
-        $this->setConnection($connection);
         return $this;
     }
 

@@ -2,6 +2,6 @@
 
 namespace DrMVC\Database\Drivers;
 
-abstract class NoSQL //implements QueryInterface
+abstract class NoSQL extends Driver //implements QueryInterface
 {
 }

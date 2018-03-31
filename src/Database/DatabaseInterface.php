@@ -14,7 +14,7 @@ interface DatabaseInterface
     /**
      * Allowed drivers
      */
-    const ALLOWED_DRIVERS = ['mysql', 'pgsql', 'sqlite', 'mongo'];
+    const ALLOWED_DRIVERS = ['mysql', 'pgsql', 'sqlite', 'mongodb'];
 
     /**
      * @param   string $collection

@@ -13,7 +13,7 @@ class Pgsql extends SQL
      *
      * The PDO_PGSQL Data Source Name (DSN) is composed of the following elements:
      */
-    const AVAILABLE_ELEMENTS = [
+    const AVAILABLE_OPTIONS = [
         'host',
         'hostaddr',
         'port',
@@ -63,10 +63,14 @@ class Pgsql extends SQL
         // Parse config
         $dsn = '';
         foreach ($config as $key => $value) {
-            if (\in_array($key, self::AVAILABLE_ELEMENTS, false)) {
+            if (\in_array($key, self::AVAILABLE_OPTIONS, false)) {
                 $dsn .= "$key=$value;";
             }
         }
-        return $dsn;
+
+        // Get driver of connection
+        $driver = strtolower($config['driver']);
+
+        return "$driver:$dsn";
     }
 }

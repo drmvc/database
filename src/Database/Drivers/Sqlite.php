@@ -9,7 +9,7 @@ class Sqlite extends SQL
      *
      * The PDO_SQLITE Data Source Name (DSN) is composed of the following elements:
      */
-    const AVAILABLE_ELEMENTS = [
+    const AVAILABLE_OPTIONS = [
         'path',
     ];
 
@@ -24,11 +24,15 @@ class Sqlite extends SQL
         // Parse config
         $dsn = '';
         foreach ($config as $key => $value) {
-            if (\in_array($key, self::AVAILABLE_ELEMENTS, false)) {
+            if (\in_array($key, self::AVAILABLE_OPTIONS, false)) {
                 $dsn .= $value;
             }
         }
-        return $dsn;
+
+        // Get driver of connection
+        $driver = strtolower($config['driver']);
+
+        return "$driver:$dsn";
     }
 
 }

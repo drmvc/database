@@ -17,5 +17,5 @@ $test = $model->test_select();
 print_r($test);
 
 // Call model's method of insert
-$test = $model->test_insert();
+//$test = $model->test_insert();
 print_r($test);

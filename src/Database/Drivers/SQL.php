@@ -4,7 +4,7 @@ namespace DrMVC\Database\Drivers;
 
 use DrMVC\Database\SQLException;
 
-abstract class SQL extends Driver
+abstract class SQL extends Driver implements SQLInterface
 {
     /**
      * Initiate connection to database
@@ -29,39 +29,75 @@ abstract class SQL extends Driver
     }
 
     /**
+     * Generate basic select query
+     *
+     * @param   array $where
+     * @return  string
+     */
+    private function getSelect(array $where): string
+    {
+        // Current table
+        $table = $this->getCollection();
+
+        // Generate where line
+        $whereDetails = !empty($where)
+            ? ' WHERE ' . $this->genWhere($where)
+            : '';
+
+        return "SELECT * FROM $table $whereDetails";
+    }
+
+    /**
      * Run a select statement against the database
      *
-     * @param   string $query
-     * @param   array $data
-     * @return  array|object
+     * @param   array $where array with data for filtering
+     * @return  mixed
      */
-    public function select(string $query, array $data = [])
+    public function select(array $where = [])
     {
         // Set statement
+        $query = $this->getSelect($where);
         $statement = $this->getConnection()->prepare($query);
 
-        // Parse parameters from array
-        foreach ($data as $key => $value) {
+        // Bind where values
+        foreach ($where as $key => $value) {
             $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue($key, $value, $value_type);
+            $statement->bindValue(":where_$key", $value, $value_type);
         }
 
-        // Execute the statement
+        // Execute operation
         $statement->execute();
 
-        // Return result
+        // Return object
         return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
     /**
-     * Exec query without return, create table for example
+     * Execute raw query, without generation, useful for some advanced operations
      *
-     * @param   string $query
+     * @param   array $arguments array of arguments
      * @return  mixed
      */
-    public function exec(string $query)
+    public function rawSQL(array $arguments)
     {
-        return $this->getConnection()->exec($query);
+        /*
+         * @param string $query  pure sql query
+         * @param  array $bind   array with values in [':key' => 'value'] format
+         * @param   bool $fetch  make fetch and return data?
+         */
+        @list($query, $bind, $fetch) = $arguments;  // Notices disabled
+
+        // Set statement
+        $statement = $this->getConnection()->prepare($query);
+
+        // Execute operation
+        $statement->execute($bind);
+
+        return (true === $fetch)
+            // Return object
+            ? $statement->fetchAll(\PDO::FETCH_OBJ)
+            // Return count of affected rows
+            : $statement->rowCount();
     }
 
     /**
@@ -95,11 +131,12 @@ abstract class SQL extends Driver
     {
         // Prepare query
         $query = $this->genInsert($data);
-        $statement = $this->_connection->prepare($query);
+        $statement = $this->getConnection()->prepare($query);
 
         // Bind values
         foreach ($data as $key => $value) {
-            $statement->bindValue(":$key", $value);
+            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $statement->bindValue(":$key", $value, $value_type);
         }
 
         // Execute operation
@@ -181,11 +218,11 @@ abstract class SQL extends Driver
     /**
      * Update method
      *
-     * @param  array $data array of columns and values
-     * @param  array $where array of columns and values
-     * @return mixed
+     * @param   array $data array of columns and values
+     * @param   array $where array with data for filtering
+     * @return  mixed
      */
-    public function update(array $data, array $where)
+    public function update(array $data, array $where = [])
     {
         // Prepare query
         $query = $this->genUpdate($data, $where);
@@ -193,12 +230,14 @@ abstract class SQL extends Driver
 
         // Bind field values
         foreach ($data as $key => $value) {
-            $statement->bindValue(":field_$key", $value);
+            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $statement->bindValue(":field_$key", $value, $value_type);
         }
 
         // Bind where values
         foreach ($where as $key => $value) {
-            $statement->bindValue(":where_$key", $value);
+            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $statement->bindValue(":where_$key", $value, $value_type);
         }
 
         // Execute operation
@@ -211,13 +250,13 @@ abstract class SQL extends Driver
     /**
      * Delete rows from database
      *
-     * @param   array $where
+     * @param   array $where array with data for filtering
      * @return  mixed
      */
     public function delete(array $where)
     {
         // Current table
-        $table = $this->getConnection();
+        $table = $this->getCollection();
 
         // Generate where line
         $whereDetails = !empty($where)
@@ -229,7 +268,8 @@ abstract class SQL extends Driver
 
         // Bind where values
         foreach ($where as $key => $value) {
-            $statement->bindValue(":where_$key", $value);
+            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $statement->bindValue(":where_$key", $value, $value_type);
         }
 
         // Execute operation
@@ -250,6 +290,6 @@ abstract class SQL extends Driver
         $table = $this->getConnection();
 
         // Exec the truncate command
-        return $this->exec("TRUNCATE TABLE $table");
+        return $this->rawSQL(["TRUNCATE TABLE $table"]);
     }
 }

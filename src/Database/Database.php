@@ -2,7 +2,6 @@
 
 namespace DrMVC\Database;
 
-use DrMVC\Config;
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
 

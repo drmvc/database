@@ -2,17 +2,13 @@
 
 namespace DrMVC\Models;
 
-use DrMVC\Config;
-use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Model;
 
 class Test extends Model
 {
-    //protected $collection = 'test';
-
     public function sql_select()
     {
-        return $this->select('SELECT * FROM prefix_test');
+        return $this->query('SELECT * FROM prefix_test');
     }
 
     public function sql_insert(array $data = ['key' => 'value', 'key2' => 'value2'])

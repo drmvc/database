@@ -4,8 +4,21 @@ namespace DrMVC\Database;
 
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
+use DrMVC\Database\Drivers\SQLInterface;
+use DrMVC\Database\Drivers\NoSQLInterface;
 use Stringy\Stringy;
 
+/**
+ * Class Model
+ * @package DrMVC\Database
+ *
+ * Virtual methods from SQLInterface:
+ * @method SQLInterface rawSQL(string $query, array $bind = null, bool $fetch = true);
+ * @method SQLInterface truncate();
+ *
+ * Virtual methods from SQLInterface:
+ * @method NoSQLInterface command(array $query);
+ */
 class Model implements ModelInterface
 {
     /**
@@ -141,33 +154,60 @@ class Model implements ModelInterface
         return $this->_instance;
     }
 
-    public function update(array $data, array $where = [])
-    {
-        return $this->getInstance()->update($data, $where);
-    }
-
-    public function delete(array $where)
-    {
-        return $this->getInstance()->delete($where);
-    }
-
-    public function exec(string $query)
-    {
-        return $this->getInstance()->exec($query);
-    }
-
+    /**
+     * Insert data into table/collection
+     *
+     * @param   array $data
+     * @return  mixed
+     */
     public function insert(array $data)
     {
         return $this->getInstance()->insert($data);
     }
 
-    public function select(string $query, array $data = [])
+    /**
+     * Read data from table/collection
+     *
+     * @param   array $where
+     * @return  mixed
+     */
+    public function select(array $where = [])
     {
-        return $this->getInstance()->select($query, $data);
+        return $this->getInstance()->select($where);
     }
 
-    public function truncate()
+    /**
+     * Update data in table/collection
+     *
+     * @param   array $data
+     * @param   array $where
+     * @return  mixed
+     */
+    public function update(array $data, array $where = [])
     {
-        return $this->getInstance()->truncate();
+        return $this->getInstance()->update($data, $where);
+    }
+
+    /**
+     * Delete data from table/collection
+     *
+     * @param   array $where
+     * @return  mixed
+     */
+    public function delete(array $where)
+    {
+        return $this->getInstance()->delete($where);
+    }
+
+    /**
+     * Call some dynamic method
+     *
+     * @param   string $name
+     * @param   array $arguments
+     * @return  mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->getInstance()->$name($arguments);
     }
 }

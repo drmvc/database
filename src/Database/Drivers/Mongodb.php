@@ -3,9 +3,15 @@
 namespace DrMVC\Database\Drivers;
 
 use MongoDB\BSON\ObjectID;
+use MongoDB\Driver\Exception\Exception as MongoException;
 use MongoDB\Driver\Exception\InvalidArgumentException;
 use MongoDB\Driver\Exception\RuntimeException;
+use MongoDB\Driver\Exception\BulkWriteException;
 use MongoDB\Driver\Manager as MongoManager;
+use MongoDB\Driver\BulkWrite as MongoBulk;
+use MongoDB\Driver\WriteConcern as MongoWrite;
+use MongoDB\Driver\Command as MongoCommand;
+use MongoDB\Driver\Query as MongoQuery;
 use DrMVC\Database\Exception;
 
 /**
@@ -129,157 +135,217 @@ class Mongodb extends NoSQL
         return $result;
     }
 
-    public function delete(array $where)
+    /**
+     * @return MongoBulk
+     */
+    private function getBulk(): MongoBulk
     {
-        // TODO: Implement delete() method.
+        try {
+            $bulk = new MongoBulk();
+        } catch (InvalidArgumentException $e) {
+            new Exception('Unable to create Bulk object');
+        }
+        return $bulk;
     }
 
-    public function update(array $data, array $where)
+    /**
+     * @return ObjectID
+     */
+    private function getID(): ObjectID
     {
-        // TODO: Implement update() method.
+        try {
+            $objectID = new ObjectID();
+        } catch (InvalidArgumentException $e) {
+            new Exception('ObjectID could not to be generated');
+        }
+        return $objectID;
     }
 
-    public function exec(string $query)
+    /**
+     * @return MongoWrite
+     */
+    private function getWrite(): MongoWrite
     {
-        // TODO: Implement exec() method.
+        try {
+            $write = new MongoWrite(MongoWrite::MAJORITY, 1000);
+        } catch (InvalidArgumentException $e) {
+            new Exception('WriteConcern could not to be initiated');
+        }
+        return $write;
     }
 
-    public function insert(array $data)
+    /**
+     * Insert in database and return of inserted element
+     *
+     * @param   array $data array of columns and values
+     * @return  mixed
+     */
+    public function insert(array $data): string
     {
-        // TODO: Implement insert() method.
+        // Set bulk object
+        $bulk = $this->getBulk();
+
+        // Set object ID as id of item
+        $query['_id'] = $this->getID();
+
+        // Set statement
+        $bulk->insert($query);
+
+        try {
+            $this->getConnection()->executeBulkWrite(
+                $this->getParam('database') . '.' . $this->getCollection(),
+                $bulk,
+                $this->getWrite()
+            );
+
+        } catch (BulkWriteException $e) {
+            new Exception('Unable to write in database');
+        }
+
+        return (string)$query['_id'];
     }
 
-    public function select(string $query, array $data)
+    /**
+     * Update data in database
+     *
+     * @param   array $data
+     * @param   array $filter
+     * @param   array $updateOptions
+     * @return  mixed
+     */
+    public function update(array $data, array $filter = [], array $updateOptions = [])
     {
-        // TODO: Implement select() method.
+        // Set bulk object
+        $bulk = $this->getBulk();
+
+        // Set statement
+        $bulk->update($filter, $data, $updateOptions);
+
+        try {
+            $response = $this->getConnection()->executeBulkWrite(
+                $this->getParam('database') . '.' . $this->getCollection(),
+                $bulk,
+                $this->getWrite()
+            );
+
+        } catch (BulkWriteException $e) {
+            new Exception('Unable to write in database');
+        }
+
+        return $response;
     }
 
-    public function truncate()
+    /**
+     * Delete data from table/collection
+     *
+     * @param   array $filter
+     * @param   array $deleteOptions
+     * @return  mixed
+     */
+    public function delete(array $filter, array $deleteOptions = [])
     {
-        // TODO: Implement truncate() method.
+        // Set bulk object
+        $bulk = $this->getBulk();
+
+        // Set statement
+        $bulk->delete($filter, $deleteOptions);
+
+        try {
+            $response = $this->getConnection()->executeBulkWrite(
+                $this->getParam('database') . '.' . $this->getCollection(),
+                $bulk,
+                $this->getWrite()
+            );
+
+        } catch (BulkWriteException $e) {
+            new Exception('Unable to write in database');
+        }
+
+        return $response;
     }
 
-//    /**
-//     * Check if incoming hash is valid mongo object id hash
-//     *
-//     * @param $value
-//     * @return bool
-//     */
-//    function isValid($value)
-//    {
-//        if ($value instanceof ObjectID) {
-//            return true;
-//        }
-//        try {
-//            new ObjectID($value);
-//            return true;
-//        } catch (\Exception $e) {
-//            return false;
-//        }
-//    }
-//
-//    /**
-//     * Write into database
-//     *
-//     * @param $collection
-//     * @param $command
-//     * @param $data
-//     * @return mixed
-//     */
-//    public function write($collection, $command, $data)
-//    {
-//        // Set the last query
-//        $this->_last_query = $data;
-//
-//        // Exec bulk command
-//        $bulk = new \MongoDB\Driver\BulkWrite();
-//
-//        switch ($command) {
-//            case 'insert':
-//                $data['_id'] = new \MongoDB\BSON\ObjectID;
-//                $bulk->insert($data);
-//                break;
-//            case 'update';
-//                $bulk->update($data[0], $data[1], $data[2]);
-//                break;
-//            case 'delete';
-//                $bulk->delete($data[0], $data[1]);
-//                break;
-//        }
-//
-//        try {
-//            $writeConcern = new \MongoDB\Driver\WriteConcern(\MongoDB\Driver\WriteConcern::MAJORITY, 1000);
-//            $this->_connection->executeBulkWrite($this->_config['database'] . '.' . $collection, $bulk, $writeConcern);
-//            if ($command == 'insert') $response = (string) new \MongoDB\BSON\ObjectID($data['_id']); else $response = true;
-//        } catch (\MongoDB\Driver\Exception\BulkWriteException $e) {
-//            error_log(
-//                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
-//                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
-//                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
-//            );
-//            exit;
-//        }
-//
-//        return $response;
-//    }
-//
-//    /**
-//     * Execute MongoCommand
-//     *
-//     * @param $query - Should be like new MongoDB\Driver\Query($filter, $options);
-//     * @return mixed
-//     */
-//    public function command($query)
-//    {
-//        // Set the last query
-//        $this->_last_query = $query;
-//
-//        // Create command from query
-//        $command = new \MongoDB\Driver\Command($query);
-//
-//        try {
-//            $cursor = $this->_connection->executeCommand($this->_config['database'], $command);
-//            $response = $cursor->toArray();
-//        } catch (\MongoDB\Driver\Exception\Exception $e) {
-//            error_log(
-//                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
-//                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
-//                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
-//            );
-//            exit;
-//        }
-//
-//        return $response;
-//    }
-//
-//    /**
-//     * Execute MongoQuery
-//     *
-//     * @param $collection
-//     * @param $filter
-//     * @param $options
-//     * @return mixed
-//     */
-//    public function query($collection, $filter, $options)
-//    {
-//        // Set the last query
-//        $this->_last_query = array($collection, $filter, $options);
-//
-//        // Create command from query
-//        $query = new \MongoDB\Driver\Query($filter, $options);
-//
-//        try {
-//            $cursor = $this->_connection->executeQuery($this->_config['database'] . '.' . $collection, $query);
-//            $response = $cursor->toArray();
-//        } catch (\MongoDB\Driver\Exception\Exception $e) {
-//            error_log(
-//                "Uncaught Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n"
-//                . "Stack trace:\n" . $e->getTraceAsString() . "\n"
-//                . "\tthrown in " . $e->getFile() . " on line " . $e->getLine()
-//            );
-//            exit;
-//        }
-//
-//        return $response;
-//    }
+    /**
+     * Create query object from filter and option arrays
+     *
+     * @param   array $where
+     * @param   array $options
+     * @return  MongoQuery
+     */
+    private function getQuery(array $where, array $options): MongoQuery
+    {
+        try {
+            $query = new MongoQuery($where, $options);
+        } catch (InvalidArgumentException $e) {
+            new Exception('WriteConcern could not to be initiated');
+        }
+        return $query;
+    }
+
+    /**
+     * Execute MongoQuery
+     *
+     * @param   array $where
+     * @param   array $options
+     * @return  mixed
+     */
+    public function select(array $where = [], array $options = [])
+    {
+        // Create query object from filter and option arrays
+        $query = $this->getQuery($where, $options);
+
+        try {
+            $cursor = $this->getConnection()->executeQuery(
+                $this->getParam('database') . '.' . $this->getCollection(),
+                $query
+            );
+            $response = $cursor->toArray();
+
+        } catch (MongoException $e) {
+            new Exception('Unable to execute query');
+        }
+
+        return $response;
+    }
+
+    /**
+     * Create command from query
+     *
+     * @param   array $query
+     * @return  MongoCommand
+     */
+    private function getCommand($query): MongoCommand
+    {
+        try {
+            $command = new MongoCommand($query);
+        } catch (InvalidArgumentException $e) {
+            new Exception('WriteConcern could not to be initiated');
+        }
+        return $command;
+    }
+
+    /**
+     * Execute MongoCommand
+     *
+     * @param   array $query should be like new MongoDB\Driver\Query($filter, $options);
+     * @return  mixed
+     */
+    public function command(array $query)
+    {
+        // Create command from query
+        $command = $this->getCommand($query);
+
+        try {
+            $cursor = $this->getConnection()->executeCommand(
+                $this->getParam('database'),
+                $command
+            );
+            $response = $cursor->toArray();
+
+        } catch (MongoException $e) {
+            new Exception('Unable to execute command');
+        }
+
+        return $response;
+    }
+
 }

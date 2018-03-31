@@ -9,7 +9,7 @@ $config->load(__DIR__ . '/database.php', 'database');
 $model = new \DrMVC\Models\Test($config->get('database'));
 
 // Direct call query via model
-$test = $model->select('SELECT * FROM prefix_test');
+$test = $model->select();
 print_r($test);
 
 // Call insert method

@@ -4,10 +4,10 @@ namespace DrMVC\Database\Drivers;
 
 use DrMVC\Config\ConfigInterface;
 
-abstract class Driver implements DriverInterface, QueryInterface
+abstract class Driver implements DriverInterface
 {
     /**
-     * @var \PDO
+     * @var mixed
      */
     protected $_connection;
 
@@ -141,9 +141,9 @@ abstract class Driver implements DriverInterface, QueryInterface
     /**
      * Get current connection
      *
-     * @return  \PDO
+     * @return  \PDO|\MongoDB\Driver\Manager
      */
-    public function getConnection(): \PDO
+    public function getConnection()
     {
         return $this->_connection;
     }

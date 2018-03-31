@@ -74,14 +74,7 @@ abstract class SQL extends Driver
         return $this->getConnection()->exec($query);
     }
 
-    /**
-     * Insert in database and return of inserted element
-     *
-     * @param   array $data array of columns and values
-     * @param   string $id field name of ID which must be returned
-     * @return  mixed
-     */
-    public function insert(array $data, string $id = null)
+    private function genInsert(array $data): string
     {
         // Current table
         $table = $this->getCollection();
@@ -92,8 +85,21 @@ abstract class SQL extends Driver
         // Generate line with data for update
         $fieldDetails = ':' . implode(', :', array_keys($data));
 
+        return "INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)";
+    }
+
+    /**
+     * Insert in database and return of inserted element
+     *
+     * @param   array $data array of columns and values
+     * @param   string $id field name of ID which must be returned
+     * @return  mixed
+     */
+    public function insert(array $data, string $id = null)
+    {
         // Prepare query
-        $statement = $this->_connection->prepare("INSERT INTO $table ($fieldNames) VALUES ($fieldDetails)");
+        $query = $this->genInsert($data);
+        $statement = $this->_connection->prepare($query);
 
         // Bind values
         foreach ($data as $key => $value) {
@@ -151,14 +157,7 @@ abstract class SQL extends Driver
         return $this->genLine($array, ' AND ', 'where');
     }
 
-    /**
-     * Update method
-     *
-     * @param  array $data array of columns and values
-     * @param  array $where array of columns and values
-     * @return mixed
-     */
-    public function update(array $data, array $where)
+    private function getUpdate(array $data, array $where): string
     {
         // Current table
         $table = $this->getConnection();
@@ -173,8 +172,21 @@ abstract class SQL extends Driver
             ? ' WHERE ' . $this->genWhere($where)
             : '';
 
+        return "UPDATE $table SET $fieldDetails $whereDetails";
+    }
+
+    /**
+     * Update method
+     *
+     * @param  array $data array of columns and values
+     * @param  array $where array of columns and values
+     * @return mixed
+     */
+    public function update(array $data, array $where)
+    {
         // Prepare query
-        $statement = $this->getConnection()->prepare("UPDATE $table SET $fieldDetails $whereDetails");
+        $query = $this->getUpdate($data, $where);
+        $statement = $this->getConnection()->prepare($query);
 
         // Bind field values
         foreach ($data as $key => $value) {

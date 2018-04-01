@@ -7,6 +7,17 @@ use DrMVC\Database\SQLException;
 abstract class SQL extends Driver implements SQLInterface
 {
     /**
+     * Check if input value is integer
+     *
+     * @param   mixed $value
+     * @return  int
+     */
+    private function isPdoInt($value): int
+    {
+        return \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+    }
+
+    /**
      * Initiate connection to database
      *
      * @return  DriverInterface
@@ -61,8 +72,7 @@ abstract class SQL extends Driver implements SQLInterface
 
         // Bind where values
         foreach ($where as $key => $value) {
-            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue(":where_$key", $value, $value_type);
+            $statement->bindValue(":where_$key", $value, $this->isPdoInt($value));
         }
 
         // Execute operation
@@ -135,8 +145,7 @@ abstract class SQL extends Driver implements SQLInterface
 
         // Bind values
         foreach ($data as $key => $value) {
-            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue(":$key", $value, $value_type);
+            $statement->bindValue(":$key", $value, $this->isPdoInt($value));
         }
 
         // Execute operation
@@ -230,14 +239,12 @@ abstract class SQL extends Driver implements SQLInterface
 
         // Bind field values
         foreach ($data as $key => $value) {
-            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue(":field_$key", $value, $value_type);
+            $statement->bindValue(":field_$key", $value, $this->isPdoInt($value));
         }
 
         // Bind where values
         foreach ($where as $key => $value) {
-            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue(":where_$key", $value, $value_type);
+            $statement->bindValue(":where_$key", $value, $this->isPdoInt($value));
         }
 
         // Execute operation
@@ -268,8 +275,7 @@ abstract class SQL extends Driver implements SQLInterface
 
         // Bind where values
         foreach ($where as $key => $value) {
-            $value_type = \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            $statement->bindValue(":where_$key", $value, $value_type);
+            $statement->bindValue(":where_$key", $value, $this->isPdoInt($value));
         }
 
         // Execute operation

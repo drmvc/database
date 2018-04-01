@@ -2,10 +2,21 @@
 
 namespace DrMVC\Database\Drivers;
 
-use DrMVC\Database\SQLException;
+use \DrMVC\Database\SQLException;
+use \PDO;
 
 abstract class SQL extends Driver implements SQLInterface
 {
+    /**
+     * Get current connection
+     *
+     * @return  PDO
+     */
+    public function getInstance(): PDO
+    {
+        return $this->_instance;
+    }
+
     /**
      * Check if input value is integer
      *
@@ -14,7 +25,7 @@ abstract class SQL extends Driver implements SQLInterface
      */
     private function isPdoInt($value): int
     {
-        return \is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+        return \is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
     }
 
     /**
@@ -25,7 +36,7 @@ abstract class SQL extends Driver implements SQLInterface
     public function connect(): DriverInterface
     {
         try {
-            $connection = new \PDO(
+            $connection = new PDO(
                 $this->getDsn(),
                 $this->getParam('username'),
                 $this->getParam('password')
@@ -79,7 +90,7 @@ abstract class SQL extends Driver implements SQLInterface
         $statement->execute();
 
         // Return object
-        return $statement->fetchAll(\PDO::FETCH_OBJ);
+        return $statement->fetchAll(PDO::FETCH_OBJ);
     }
 
     /**
@@ -106,7 +117,7 @@ abstract class SQL extends Driver implements SQLInterface
 
         return (true === $fetch)
             // Return object
-            ? $statement->fetchAll(\PDO::FETCH_OBJ)
+            ? $statement->fetchAll(PDO::FETCH_OBJ)
             // Return count of affected rows
             : $statement->rowCount();
     }

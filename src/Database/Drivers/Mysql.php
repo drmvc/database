@@ -2,7 +2,8 @@
 
 namespace DrMVC\Database\Drivers;
 
-use DrMVC\Database\SQLException;
+use \DrMVC\Database\SQLException;
+use PDO;
 
 /**
  * Class Mysql for connecto
@@ -57,7 +58,7 @@ class Mysql extends SQL
     public function connect(): DriverInterface
     {
         try {
-            $connection = new \PDO(
+            $connection = new PDO(
                 $this->getDsn(),
                 $this->getParam('username'),
                 $this->getParam('password'),
@@ -81,7 +82,7 @@ class Mysql extends SQL
         $collation = $this->getParam('collation') ?? self::DEFAULT_COLLATION;
 
         // Return array of options
-        return [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '$charset' COLLATE '$collation'"];
+        return [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '$charset' COLLATE '$collation'"];
     }
 
 }

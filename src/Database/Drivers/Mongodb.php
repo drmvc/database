@@ -73,6 +73,16 @@ class Mongodb extends NoSQL
     ];
 
     /**
+     * Get current connection
+     *
+     * @return  MongoManager
+     */
+    public function getInstance(): MongoManager
+    {
+        return $this->_instance;
+    }
+
+    /**
      * Initiate connection with database
      *
      * @return  DriverInterface

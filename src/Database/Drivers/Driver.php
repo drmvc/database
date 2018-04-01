@@ -141,10 +141,8 @@ abstract class Driver implements DriverInterface
     /**
      * Get current connection
      *
-     * @return  \PDO|\MongoDB\Driver\Manager
+     * @return  mixed
      */
-    public function getInstance()
-    {
-        return $this->_instance;
-    }
+    abstract public function getInstance();
+
 }

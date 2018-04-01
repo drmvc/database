@@ -43,7 +43,7 @@ interface DriverInterface
     /**
      * Get current connection
      *
-     * @return  mixed
+     * @return  \PDO|\MongoDB\Driver\Manager
      */
     public function getConnection();
 

@@ -78,11 +78,12 @@ $config->load(__DIR__ . '/database.php', 'database');
 $model = new \DrMVC\Database\Model($config->get('database'), 'test');
 
 // Direct call query via model
-$test = $model->select('SELECT * FROM prefix_test');
+$where = ['name' => 'somename', 'email' => 'someemail'];
+$test = $model->select($where);
 
 // Advanced example of select usage
-$where = ['name' => 'somename', 'email' => 'someemail'];
-$test = $model->select("SELECT * FROM prefix_users WHERE name = :name AND email = :email", $where);
+$bind = ['name' => 'somename', 'email' => 'someemail'];
+$test = $model->rawSQL("SELECT * FROM prefix_users WHERE name = :name AND email = :email", $bind);
 
 // Call insert method
 $data = ['key' => 'value', 'key2' => 'value2'];
@@ -106,21 +107,20 @@ namespace MyApp\Models;
 
 use DrMVC\Database\Model;
 
+//
+// You need create object of this model with DrMVC\Config class
+// as first parameter, because it need for parent:
+//
+// parent::__construct(ConfigInterface $config = null)
+//
+
 class Test extends Model
 {
     protected $collection = 'test';
 
-    public function __construct(ConfigInterface $config = null)
+    public function select_all()
     {
-        // Unfortunately this part yet is not ready, so you can use temporary solution
-        $config = new Config();
-        $config->load(__DIR__ . '/database.php', 'database');
-        parent::__construct($config);
-    }
-
-    public function sql_select()
-    {
-        return $this->select('SELECT * FROM prefix_test');
+        return $this->select();
     }
 
     public function sql_insert(array $data = ['key' => 'value', 'key2' => 'value2'])
@@ -135,9 +135,9 @@ class Test extends Model
         return $this->update($data, $where);
     }
 
-    public function sql_delete(array $data)
+    public function sql_delete(array $where)
     {
-        return $this->delete($data);
+        return $this->delete($where);
     }
 }
 ```

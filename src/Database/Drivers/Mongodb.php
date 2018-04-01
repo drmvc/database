@@ -206,6 +206,49 @@ class Mongodb extends NoSQL
     }
 
     /**
+     * Create query object from filter and option arrays
+     *
+     * @param   array $where
+     * @param   array $options
+     * @return  MongoQuery
+     */
+    private function getQuery(array $where, array $options): MongoQuery
+    {
+        try {
+            $query = new MongoQuery($where, $options);
+        } catch (InvalidArgumentException $e) {
+            new Exception('WriteConcern could not to be initiated');
+        }
+        return $query;
+    }
+
+    /**
+     * Execute MongoQuery
+     *
+     * @param   array $filter
+     * @param   array $options
+     * @return  mixed
+     */
+    public function select(array $filter = [], array $options = [])
+    {
+        // Create query object from filter and option arrays
+        $query = $this->getQuery($filter, $options);
+
+        try {
+            $cursor = $this->getConnection()->executeQuery(
+                $this->getParam('database') . '.' . $this->getCollection(),
+                $query
+            );
+            $response = $cursor->toArray();
+
+        } catch (MongoException $e) {
+            new Exception('Unable to execute query');
+        }
+
+        return $response;
+    }
+
+    /**
      * Update data in database
      *
      * @param   array $data
@@ -259,49 +302,6 @@ class Mongodb extends NoSQL
 
         } catch (BulkWriteException $e) {
             new Exception('Unable to write in database');
-        }
-
-        return $response;
-    }
-
-    /**
-     * Create query object from filter and option arrays
-     *
-     * @param   array $where
-     * @param   array $options
-     * @return  MongoQuery
-     */
-    private function getQuery(array $where, array $options): MongoQuery
-    {
-        try {
-            $query = new MongoQuery($where, $options);
-        } catch (InvalidArgumentException $e) {
-            new Exception('WriteConcern could not to be initiated');
-        }
-        return $query;
-    }
-
-    /**
-     * Execute MongoQuery
-     *
-     * @param   array $where
-     * @param   array $options
-     * @return  mixed
-     */
-    public function select(array $where = [], array $options = [])
-    {
-        // Create query object from filter and option arrays
-        $query = $this->getQuery($where, $options);
-
-        try {
-            $cursor = $this->getConnection()->executeQuery(
-                $this->getParam('database') . '.' . $this->getCollection(),
-                $query
-            );
-            $response = $cursor->toArray();
-
-        } catch (MongoException $e) {
-            new Exception('Unable to execute query');
         }
 
         return $response;

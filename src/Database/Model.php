@@ -16,7 +16,7 @@ use Stringy\Stringy;
  * @method SQLInterface rawSQL(string $query, array $bind = null, bool $fetch = true);
  * @method SQLInterface truncate();
  *
- * Virtual methods from SQLInterface:
+ * Virtual methods from MoSQLInterface:
  * @method NoSQLInterface command(array $query);
  */
 class Model implements ModelInterface

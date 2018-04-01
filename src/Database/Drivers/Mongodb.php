@@ -186,10 +186,10 @@ class Mongodb extends NoSQL
         $bulk = $this->getBulk();
 
         // Set object ID as id of item
-        $query['_id'] = $this->getID();
+        $data['_id'] = $this->getID();
 
         // Set statement
-        $bulk->insert($query);
+        $bulk->insert($data);
 
         try {
             $this->getConnection()->executeBulkWrite(
@@ -202,7 +202,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to write in database');
         }
 
-        return (string)$query['_id'];
+        return (string)$data['_id'];
     }
 
     /**

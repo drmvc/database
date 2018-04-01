@@ -85,9 +85,9 @@ class Model implements ModelInterface
     }
 
     /**
-     * Get current database name
+     * Get current connection
      *
-     * @return string
+     * @return  \PDO|\MongoDB\Driver\Manager
      */
     public function getConnection(): string
     {

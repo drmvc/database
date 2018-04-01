@@ -30,7 +30,7 @@ abstract class SQL extends Driver implements SQLInterface
                 $this->getParam('username'),
                 $this->getParam('password')
             );
-            $this->setConnection($connection);
+            $this->setInstance($connection);
 
         } catch (SQLException $e) {
             // __construct
@@ -68,7 +68,7 @@ abstract class SQL extends Driver implements SQLInterface
     {
         // Set statement
         $query = $this->getSelect($where);
-        $statement = $this->getConnection()->prepare($query);
+        $statement = $this->getInstance()->prepare($query);
 
         // Bind where values
         foreach ($where as $key => $value) {
@@ -98,7 +98,7 @@ abstract class SQL extends Driver implements SQLInterface
         @list($query, $bind, $fetch) = $arguments;  // Notices disabled
 
         // Set statement
-        $statement = $this->getConnection()->prepare($query);
+        $statement = $this->getInstance()->prepare($query);
 
         // Execute operation
         $statement->execute($bind);
@@ -141,7 +141,7 @@ abstract class SQL extends Driver implements SQLInterface
     {
         // Prepare query
         $query = $this->genInsert($data);
-        $statement = $this->getConnection()->prepare($query);
+        $statement = $this->getInstance()->prepare($query);
 
         // Bind values
         foreach ($data as $key => $value) {
@@ -153,7 +153,7 @@ abstract class SQL extends Driver implements SQLInterface
 
         return (null !== $id)
             // Return ID of inserted element
-            ? $this->getConnection()->lastInsertId($id)
+            ? $this->getInstance()->lastInsertId($id)
             // Return count of affected rows
             : $statement->rowCount();
     }
@@ -235,7 +235,7 @@ abstract class SQL extends Driver implements SQLInterface
     {
         // Prepare query
         $query = $this->genUpdate($data, $where);
-        $statement = $this->getConnection()->prepare($query);
+        $statement = $this->getInstance()->prepare($query);
 
         // Bind field values
         foreach ($data as $key => $value) {
@@ -271,7 +271,7 @@ abstract class SQL extends Driver implements SQLInterface
             : '';
 
         // Prepare query
-        $statement = $this->getConnection()->prepare("DELETE FROM $table $whereDetails");
+        $statement = $this->getInstance()->prepare("DELETE FROM $table $whereDetails");
 
         // Bind where values
         foreach ($where as $key => $value) {
@@ -293,7 +293,7 @@ abstract class SQL extends Driver implements SQLInterface
     public function truncate()
     {
         // Current table
-        $table = $this->getConnection();
+        $table = $this->getInstance();
 
         // Exec the truncate command
         return $this->rawSQL(["TRUNCATE TABLE $table"]);

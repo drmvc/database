@@ -35,17 +35,17 @@ interface DriverInterface
     /**
      * Save connection with database via driver
      *
-     * @param   mixed $connection
+     * @param   mixed $instance
      * @return  DriverInterface
      */
-    public function setConnection($connection): DriverInterface;
+    public function setInstance($instance): DriverInterface;
 
     /**
      * Get current connection
      *
      * @return  \PDO|\MongoDB\Driver\Manager
      */
-    public function getConnection();
+    public function getInstance();
 
     /**
      * Generate DSN by data in config

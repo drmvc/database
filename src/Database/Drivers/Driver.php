@@ -9,7 +9,7 @@ abstract class Driver implements DriverInterface
     /**
      * @var mixed
      */
-    protected $_connection;
+    protected $_instance;
 
     /**
      * @var ConfigInterface
@@ -48,7 +48,7 @@ abstract class Driver implements DriverInterface
      */
     public function disconnect(): DriverInterface
     {
-        $this->setConnection(null);
+        $this->setInstance(null);
         return $this;
     }
 
@@ -129,12 +129,12 @@ abstract class Driver implements DriverInterface
     /**
      * Save connection with database via driver
      *
-     * @param   mixed $connection
+     * @param   mixed $instance
      * @return  DriverInterface
      */
-    public function setConnection($connection): DriverInterface
+    public function setInstance($instance): DriverInterface
     {
-        $this->_connection = $connection;
+        $this->_instance = $instance;
         return $this;
     }
 
@@ -143,8 +143,8 @@ abstract class Driver implements DriverInterface
      *
      * @return  \PDO|\MongoDB\Driver\Manager
      */
-    public function getConnection()
+    public function getInstance()
     {
-        return $this->_connection;
+        return $this->_instance;
     }
 }

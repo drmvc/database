@@ -63,7 +63,7 @@ class Mysql extends SQL
                 $this->getParam('password'),
                 $this->getOptions()
             );
-            $this->setConnection($connection);
+            $this->setInstance($connection);
 
         } catch (SQLException $e) {
             // __construct

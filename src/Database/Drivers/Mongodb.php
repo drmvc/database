@@ -91,7 +91,7 @@ class Mongodb extends NoSQL
                 $this->getOptions($options, self::AVAILABLE_OPTIONS),
                 $this->getOptions($optionsDriver, self::AVAILABLE_DRIVER_OPTIONS)
             );
-            $this->setConnection($connection);
+            $this->setInstance($connection);
 
         } catch (RuntimeException $e) {
             new Exception('Unable to connect');
@@ -192,7 +192,7 @@ class Mongodb extends NoSQL
         $bulk->insert($data);
 
         try {
-            $this->getConnection()->executeBulkWrite(
+            $this->getInstance()->executeBulkWrite(
                 $this->getParam('database') . '.' . $this->getCollection(),
                 $bulk,
                 $this->getWrite()
@@ -202,7 +202,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to write in database');
         }
 
-        return (string)$data['_id'];
+        return (string) $data['_id'];
     }
 
     /**
@@ -235,7 +235,7 @@ class Mongodb extends NoSQL
         $query = $this->getQuery($filter, $options);
 
         try {
-            $cursor = $this->getConnection()->executeQuery(
+            $cursor = $this->getInstance()->executeQuery(
                 $this->getParam('database') . '.' . $this->getCollection(),
                 $query
             );
@@ -265,7 +265,7 @@ class Mongodb extends NoSQL
         $bulk->update($filter, $data, $updateOptions);
 
         try {
-            $response = $this->getConnection()->executeBulkWrite(
+            $response = $this->getInstance()->executeBulkWrite(
                 $this->getParam('database') . '.' . $this->getCollection(),
                 $bulk,
                 $this->getWrite()
@@ -294,7 +294,7 @@ class Mongodb extends NoSQL
         $bulk->delete($filter, $deleteOptions);
 
         try {
-            $response = $this->getConnection()->executeBulkWrite(
+            $response = $this->getInstance()->executeBulkWrite(
                 $this->getParam('database') . '.' . $this->getCollection(),
                 $bulk,
                 $this->getWrite()
@@ -335,7 +335,7 @@ class Mongodb extends NoSQL
         $command = $this->getCommand($query);
 
         try {
-            $cursor = $this->getConnection()->executeCommand(
+            $cursor = $this->getInstance()->executeCommand(
                 $this->getParam('database'),
                 $command
             );

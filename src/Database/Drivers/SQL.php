@@ -95,7 +95,8 @@ abstract class SQL extends Driver implements SQLInterface
          * @param  array $bind   array with values in [':key' => 'value'] format
          * @param   bool $fetch  make fetch and return data?
          */
-        @list($query, $bind, $fetch) = $arguments;  // Notices disabled
+        @list($query, $bind, $fetch) = $arguments;
+        // Notices disabled
 
         // Set statement
         $statement = $this->getInstance()->prepare($query);

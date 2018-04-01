@@ -192,13 +192,11 @@ class Mongodb extends NoSQL
      */
     public function insert(array $data): string
     {
-        // Set bulk object
-        $bulk = $this->getBulk();
-
         // Set object ID as id of item
         $data['_id'] = $this->getID();
 
-        // Set statement
+        // Set statement of bulk object
+        $bulk = $this->getBulk();
         $bulk->insert($data);
 
         try {
@@ -255,7 +253,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to execute query');
         }
 
-        return $response;
+        return $response ?? false;
     }
 
     /**
@@ -268,10 +266,8 @@ class Mongodb extends NoSQL
      */
     public function update(array $data, array $filter = [], array $updateOptions = [])
     {
-        // Set bulk object
+        // Set statement of bulk object
         $bulk = $this->getBulk();
-
-        // Set statement
         $bulk->update($filter, $data, $updateOptions);
 
         try {
@@ -285,7 +281,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to write in database');
         }
 
-        return $response;
+        return $response ?? false;
     }
 
     /**
@@ -297,10 +293,8 @@ class Mongodb extends NoSQL
      */
     public function delete(array $filter, array $deleteOptions = [])
     {
-        // Set bulk object
+        // Set statement of bulk object
         $bulk = $this->getBulk();
-
-        // Set statement
         $bulk->delete($filter, $deleteOptions);
 
         try {
@@ -314,7 +308,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to write in database');
         }
 
-        return $response;
+        return $response ?? false;
     }
 
     /**
@@ -355,7 +349,7 @@ class Mongodb extends NoSQL
             new Exception('Unable to execute command');
         }
 
-        return $response;
+        return $response ?? false;
     }
 
 }

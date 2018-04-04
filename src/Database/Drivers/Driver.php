@@ -28,10 +28,14 @@ abstract class Driver implements DriverInterface
      * @param   ConfigInterface $config object with current configuration
      * @param   string $collection name of collection
      */
-    public function __construct(ConfigInterface $config, string $collection)
+    public function __construct(ConfigInterface $config, string $collection = null)
     {
         $this->setConfig($config);
-        $this->setCollection($this->getParam('prefix') . $collection);
+
+        // Set collection name if name is provided
+        if (null !== $collection) {
+            $this->setCollection($this->getParam('prefix') . $collection);
+        }
     }
 
     /**

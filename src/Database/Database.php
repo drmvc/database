@@ -30,11 +30,15 @@ class Database implements DatabaseInterface
      * @param   string $collection
      * @return  QueryInterface
      */
-    public function getInstance(string $collection): QueryInterface
+    public function getInstance(string $collection = null): QueryInterface
     {
         $class = $this->getDriver();
         $instance = new $class($this->getConfig(), $collection);
-        return $instance->connect();
+
+        // If collection name is not provided then need return clean instance for ORM
+        return (null !== $collection)
+            ? $instance->connect()
+            : $instance->connect()->getInstance();
     }
 
     /**

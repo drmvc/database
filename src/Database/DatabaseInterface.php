@@ -21,4 +21,12 @@ interface DatabaseInterface
      * @return  QueryInterface
      */
     public function getInstance(string $collection): QueryInterface;
+
+    /**
+     * Get driver of current database
+     *
+     * @return  string
+     */
+    public function getDriver(): string;
+
 }

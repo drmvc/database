@@ -42,7 +42,7 @@ class Database implements DatabaseInterface
      *
      * @return  string
      */
-    private function getDriver(): string
+    public function getDriver(): string
     {
         // Extract driver name from current config
         $driver = $this->getConfig('driver');

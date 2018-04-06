@@ -13,7 +13,7 @@ return [
          * You also can work with "in memory" sqlite database,
          * for this you need to use this ['path' => ':memory:']
          */
-        'path'      => __DIR__ . '/sqlite.db',
+        'path'      => __DIR__ . '/../sqlite.db',
     ],
 ];
 

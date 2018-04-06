@@ -3,10 +3,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load configuration of current database instance
 $config = new \DrMVC\Config();
-$config->load(__DIR__ . '/database.php', 'database');
+$config->load(__DIR__ . '/database.php');
+
+// Connection details about required connection
+$configDB = $config->get('default');
 
 // Initiate model with collection with what we want work, 'test' for example
-$model = new \DrMVC\Database\Model($config->get('database'), 'test');
+$model = new \DrMVC\Database\Model($configDB, 'test');
 
 // Call insert method
 $data = ['key' => 'value', 'key2' => 'value2'];

@@ -6,7 +6,7 @@ $config = new \DrMVC\Config();
 $config->load(__DIR__ . '/database.php', 'database');
 
 // Initiate model with collection with what we want work, 'test' for example
-$model = new \DrMVC\Models\Test($config->get('database'));
+$model = new \DrMVC\Models\Test($config);
 
 // Direct call query via model
 $test = $model->select();

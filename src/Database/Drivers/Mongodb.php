@@ -18,7 +18,7 @@ use DrMVC\Database\Exception;
  * Class for work with modern MongoDB php driver (for PHP >= 7.0)
  * @package DrMVC\Database\Drivers
  */
-class Mongodb extends NoSQL
+class Mongodb extends NoSQL implements MongodbInterface
 {
     const DEFAULT_HOST = 'localhost';
     const DEFAULT_PORT = '27017';

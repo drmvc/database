@@ -5,7 +5,7 @@ namespace DrMVC\Database;
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
 use DrMVC\Database\Drivers\SQLInterface;
-use DrMVC\Database\Drivers\NoSQLInterface;
+use DrMVC\Database\Drivers\MongodbInterface;
 use Stringy\Stringy;
 
 /**
@@ -17,7 +17,7 @@ use Stringy\Stringy;
  * @method SQLInterface truncate();
  *
  * Virtual methods from MoSQLInterface:
- * @method NoSQLInterface command(array $query);
+ * @method MongodbInterface command(array $query);
  */
 class Model implements ModelInterface
 {

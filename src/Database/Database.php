@@ -28,9 +28,9 @@ class Database implements DatabaseInterface
 
     /**
      * @param   string $collection
-     * @return  QueryInterface
+     * @return  mixed
      */
-    public function getInstance(string $collection = null): QueryInterface
+    public function getInstance(string $collection = null)
     {
         $class = $this->getDriver();
         $instance = new $class($this->getConfig(), $collection);

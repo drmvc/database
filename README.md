@@ -98,6 +98,26 @@ $test = $model->update($data, $where);
 $model->exec('create table example_table');
 ```
 
+### Simple connect to database
+
+
+
+```php
+use \DrMVC\Config;
+use \DrMVC\Database;
+
+// Load configuration of current database instance
+$config = new Config();
+$config->load(__DIR__ . '/database.php', 'database');
+
+// Create database object
+$db = new Database($config);
+
+// Get only instance (PDO or MongoManager, depending on the "driver"
+// which you set in config)
+$instance = $db->getInstance();
+```
+
 ### OOP style
 
 ```php

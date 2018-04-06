@@ -2,6 +2,9 @@
 
 namespace DrMVC\Database;
 
+use MongoDB\Driver\Manager;
+use PDO;
+use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
 
 interface DatabaseInterface
@@ -18,9 +21,9 @@ interface DatabaseInterface
 
     /**
      * @param   string $collection
-     * @return  QueryInterface
+     * @return  QueryInterface|PDO|Manager
      */
-    public function getInstance(string $collection): QueryInterface;
+    public function getInstance(string $collection);
 
     /**
      * Get driver of current database
@@ -28,5 +31,21 @@ interface DatabaseInterface
      * @return  string
      */
     public function getDriver(): string;
+
+    /**
+     * Set configuration of database
+     *
+     * @param   ConfigInterface $config
+     * @return  DatabaseInterface
+     */
+    public function setConfig(ConfigInterface $config): DatabaseInterface;
+
+    /**
+     * Get database configuration object or array with single database
+     *
+     * @param   string|null $name
+     * @return  mixed
+     */
+    public function getConfig(string $name = null);
 
 }

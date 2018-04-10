@@ -2,10 +2,10 @@
 
 namespace DrMVC\Database;
 
-use MongoDB\Driver\Manager;
-use PDO;
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
+use MongoDB\Driver\Manager;
+use PDO;
 
 interface DatabaseInterface
 {

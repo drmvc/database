@@ -4,6 +4,8 @@ namespace DrMVC\Database;
 
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;
+use MongoDB\Driver\Manager;
+use PDO;
 
 /**
  * Class for work with databases
@@ -28,7 +30,7 @@ class Database implements DatabaseInterface
 
     /**
      * @param   string $collection
-     * @return  mixed
+     * @return  QueryInterface|PDO|Manager
      */
     public function getInstance(string $collection = null)
     {

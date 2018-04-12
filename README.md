@@ -30,9 +30,7 @@ some new databases will be added soon.
 | sqlite  | SQLite (file and memory modes) |
 | mongodb | MongoDB (php 7.0 and above only) |
 
-## How to use
-
-### Database configs
+## Database configuration
 
 You can find few examples of database config files with description
 and links [here](extra/configs/).
@@ -60,7 +58,9 @@ Where:
 
 * default - name of database connection which must be used by default
 * driver - any driver from [this](#supported-databases) list
-* prefix - prefix of tables names, required by almost all methods (but not in `select()` or `exec()`)
+* prefix - prefix of tables names, required by almost all methods (but not for `select()` or `rawSQL()`)
+
+## How to use
 
 ### Basic example
 
@@ -129,6 +129,12 @@ $instance = $db->getInstance();
 ```
 
 ### OOP style
+
+As mentioned earlier in this library, implemented basic CRUD support,
+that is, you can declare the models dynamically and write simple
+queries into the database for which the ORM would be redundant. For
+example, you need to insert a row, delete or query all rows from the
+table.
 
 ```php
 <?php

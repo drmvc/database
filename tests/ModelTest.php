@@ -54,32 +54,49 @@ class ModelTest extends TestCase
             $this->assertContains('Must be initialized ', $e->getMessage());
         }
     }
-//
-//    public function testGetConnection()
-//    {
-//
-//    }
-//
-//    public function testSetCollection()
-//    {
-//
-//    }
-//
-//    public function testGetInstance()
-//    {
-//
-//    }
-//
-//    public function testGetCollection()
-//    {
-//
-//    }
-//
-//    public function testRawSQL()
-//    {
-//
-//    }
-//
+
+    public function testGetInstance()
+    {
+        $obj = new Model($this->config);
+        $inst = $obj->getInstance();
+        $this->assertInternalType('object', $inst);
+        $this->assertInstanceOf(Database\Drivers\Sqlite::class, $inst);
+    }
+
+    public function testGetConnection()
+    {
+        $obj = new Model($this->config);
+        $conn = $obj->getConnection();
+        $this->assertEquals('default', $conn);
+    }
+
+    public function testGetCollection()
+    {
+        $obj = new Model($this->config);
+        $coll = $obj->getCollection();
+        $this->assertEquals('model', $coll);
+    }
+
+    public function testSetCollection()
+    {
+        $obj = new Model($this->config);
+        $coll = $obj->getCollection();
+        $this->assertEquals('model', $coll);
+
+        $obj->setCollection('users');
+        $coll = $obj->getCollection();
+        $this->assertEquals('users', $coll);
+    }
+
+    public function testRawSQL()
+    {
+        $obj = new Model($this->config);
+        $result = $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.ddl'));
+        print_r($result);
+        $result = $obj->rawSQL('SELECT * FROM users', [], true);
+        print_r($result);
+    }
+
 //    public function test__call()
 //    {
 //

@@ -41,6 +41,10 @@ abstract class SQL extends Driver implements SQLInterface
                 $this->getParam('username'),
                 $this->getParam('password')
             );
+
+            // We allow to print the errors whenever there is one
+            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
             $this->setInstance($connection);
 
         } catch (SQLException $e) {
@@ -101,13 +105,18 @@ abstract class SQL extends Driver implements SQLInterface
      */
     public function rawSQL(array $arguments)
     {
+        if (!isset($arguments[1])) {
+            $arguments[1] = [];
+        }
+        if (!isset($arguments[2])) {
+            $arguments[2] = false;
+        }
         /*
          * @param string $query  pure sql query
          * @param  array $bind   array with values in [':key' => 'value'] format
          * @param   bool $fetch  make fetch and return data?
          */
-        @list($query, $bind, $fetch) = $arguments;
-        // Notices disabled
+        list($query, $bind, $fetch) = $arguments;
 
         // Set statement
         $statement = $this->getInstance()->prepare($query);

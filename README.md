@@ -64,6 +64,10 @@ Where:
 
 ### Basic example
 
+A small example of working with a database with the simplest
+implementation of the basic CRUD logic, they do not have JOIN, ORDER
+and other complex methods, only basic functionality.
+
 Source code of `example.php` file:
 
 ```php
@@ -100,18 +104,24 @@ $model->exec('create table example_table');
 
 ### Simple connect to database
 
-
+Sometimes it is required to implement a system that works directly
+with the database object (for example some ORM or custom queries),
+for this purpose in `Database` class the `getInstance` method was
+implemented.
 
 ```php
+<?php
+
 use \DrMVC\Config;
 use \DrMVC\Database;
 
 // Load configuration of current database instance
 $config = new Config();
-$config->load(__DIR__ . '/database.php', 'database');
+// Example in "Database configs" chapter
+$config->load(__DIR__ . '/database.php');
 
 // Create database object
-$db = new Database($config);
+$db = new Database($config->get('default'));
 
 // Get only instance (PDO or MongoManager, depending on the "driver"
 // which you set in config)
@@ -128,8 +138,8 @@ namespace MyApp\Models;
 use DrMVC\Database\Model;
 
 //
-// You need create object of this model with DrMVC\Config class
-// as first parameter, because it need for parent:
+// You need create object of this model with DrMVC\Config class as
+// first parameter, because it is required by parent Database class:
 //
 // parent::__construct(ConfigInterface $config = null)
 //

@@ -32,6 +32,12 @@
     "phpunit/phpunit": "^6.0",
     "phpunit/dbunit": "^3.0"
   },
+  "suggest": {
+    "ext-pdo_mysql": "Required for MySQL databases support",
+    "ext-pdo_pgsql": "Required for PgSQL databases support",
+    "ext-pdo_sqlite": "Required for SQLite3 databases support",
+    "ext-mongodb": "Required for Mongo databases support"
+  },
   "autoload": {
     "psr-4": {
       "DrMVC\\": "./src/"

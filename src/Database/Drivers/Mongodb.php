@@ -15,8 +15,10 @@ use MongoDB\Driver\Query as MongoQuery;
 use DrMVC\Database\Exception;
 
 /**
- * Class for work with modern MongoDB php driver (for PHP >= 7.0)
+ * Class for work with modern MongoDB php driver (for PHP >= 7.0 only)
+ *
  * @package DrMVC\Database\Drivers
+ * @since   3.0
  */
 class Mongodb extends NoSQL implements MongodbInterface
 {

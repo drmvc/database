@@ -9,8 +9,10 @@ use DrMVC\Database\Drivers\MongodbInterface;
 use Stringy\Stringy;
 
 /**
- * Class Model
+ * Wrapper for simple work with database objects
+ *
  * @package DrMVC\Database
+ * @since   3.0
  *
  * Virtual methods from SQLInterface:
  * @method SQLInterface rawSQL(string $query, array $bind = null, bool $fetch = true);
@@ -22,6 +24,7 @@ use Stringy\Stringy;
 class Model implements ModelInterface
 {
     /**
+     * Connection with database will be stored here
      * @var QueryInterface
      */
     private $_instance;

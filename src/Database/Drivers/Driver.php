@@ -4,6 +4,10 @@ namespace DrMVC\Database\Drivers;
 
 use DrMVC\Config\ConfigInterface;
 
+/**
+ * Abstract class, in which implemented basic logic similar for all database drivers
+ * @package DrMVC\Database\Drivers
+ */
 abstract class Driver implements DriverInterface
 {
     /**

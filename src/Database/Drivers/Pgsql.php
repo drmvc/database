@@ -2,6 +2,12 @@
 
 namespace DrMVC\Database\Drivers;
 
+/**
+ * Wrapper of PDO for work with PgSQL databases
+ *
+ * @package DrMVC\Database\Drivers
+ * @since   3.0
+ */
 class Pgsql extends SQL
 {
     const DEFAULT_HOST = '127.0.0.1';

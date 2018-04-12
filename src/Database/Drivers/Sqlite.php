@@ -2,6 +2,12 @@
 
 namespace DrMVC\Database\Drivers;
 
+/**
+ * Wrapper of PDO for work with SQLite databases
+ *
+ * @package DrMVC\Database\Drivers
+ * @since   3.0
+ */
 class Sqlite extends SQL
 {
     /**

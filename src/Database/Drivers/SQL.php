@@ -2,9 +2,15 @@
 
 namespace DrMVC\Database\Drivers;
 
-use \DrMVC\Database\SQLException;
-use \PDO;
+use DrMVC\Database\SQLException;
+use PDO;
 
+/**
+ * Abstract class for work with SQL-based databases (via PDO)
+ *
+ * @package DrMVC\Database\Drivers
+ * @since   3.0
+ */
 abstract class SQL extends Driver implements SQLInterface
 {
     /**
@@ -97,13 +103,7 @@ abstract class SQL extends Driver implements SQLInterface
         return $statement->fetchAll(PDO::FETCH_OBJ);
     }
 
-    /**
-     * Execute raw query, without generation, useful for some advanced operations
-     *
-     * @param   array $arguments array of arguments
-     * @return  mixed
-     */
-    public function rawSQL(array $arguments)
+    private function setRawDefauls(array &$arguments)
     {
         // Values for bind
         if (!isset($arguments[1])) {
@@ -113,6 +113,19 @@ abstract class SQL extends Driver implements SQLInterface
         if (!isset($arguments[2])) {
             $arguments[2] = false;
         }
+        return $arguments;
+    }
+
+    /**
+     * Execute raw query, without generation, useful for some advanced operations
+     *
+     * @param   array $arguments array of arguments
+     * @return  mixed
+     */
+    public function rawSQL(array $arguments)
+    {
+        // Small fixes if only query provided
+        $this->setRawDefauls($arguments);
 
         /*
          * @param string $query  pure sql query

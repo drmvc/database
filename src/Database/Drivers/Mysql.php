@@ -2,12 +2,14 @@
 
 namespace DrMVC\Database\Drivers;
 
-use \DrMVC\Database\SQLException;
+use DrMVC\Database\SQLException;
 use PDO;
 
 /**
- * Class Mysql for connecto
+ * Wrapper of PDO for work with MySQL/MariaDB databases
+ *
  * @package DrMVC\Database\Drivers
+ * @since   3.0
  */
 class Mysql extends SQL
 {

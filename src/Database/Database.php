@@ -9,7 +9,9 @@ use PDO;
 
 /**
  * Class for work with databases
+ *
  * @package Modules\Database\Core
+ * @since   3.0
  */
 class Database implements DatabaseInterface
 {

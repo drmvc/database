@@ -3,8 +3,10 @@
 namespace DrMVC\Database;
 
 /**
- * Class SQLException
+ * Wrapper for PDOException
+ *
  * @package DrMVC\Database
+ * @since   3.0
  */
 class SQLException extends \PDOException
 {

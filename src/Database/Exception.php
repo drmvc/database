@@ -3,8 +3,10 @@
 namespace DrMVC\Database;
 
 /**
- * Class Exception
+ * Wrapper for Exception
+ *
  * @package DrMVC\Database
+ * @since   3.0
  */
 class Exception extends \Exception
 {

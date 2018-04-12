@@ -105,12 +105,15 @@ abstract class SQL extends Driver implements SQLInterface
      */
     public function rawSQL(array $arguments)
     {
+        // Values for bind
         if (!isset($arguments[1])) {
             $arguments[1] = [];
         }
+        // Enable fetchAll
         if (!isset($arguments[2])) {
             $arguments[2] = false;
         }
+
         /*
          * @param string $query  pure sql query
          * @param  array $bind   array with values in [':key' => 'value'] format
@@ -192,7 +195,7 @@ abstract class SQL extends Driver implements SQLInterface
         $line = '';
         $i = 0;
         foreach ($array as $key => $value) {
-            $line .= (($i !== 0) ? null : $glue) . "$key = :${name}_$key";
+            $line .= (($i === 0) ? null : $glue) . "$key = :${name}_$key";
             $i = 1;
         }
         return $line;

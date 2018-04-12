@@ -91,15 +91,58 @@ class ModelTest extends TestCase
     public function testRawSQL()
     {
         $obj = new Model($this->config);
-        $result = $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.ddl'));
-        print_r($result);
+        $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.ddl'));
+        $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.sql'));
         $result = $obj->rawSQL('SELECT * FROM users', [], true);
-        print_r($result);
+
+        $this->assertCount(3, $result);
     }
 
-//    public function test__call()
-//    {
-//
-//    }
+    public function test__call()
+    {
+        $obj = new Model($this->config, 'users');
+        $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.ddl'));
+        $obj->rawSQL(file_get_contents(__DIR__ . '/../extra/ddl/sqlite.sql'));
+
+        $data_insert = [
+            'username' => 'tests',
+            'password' => 'pass',
+            'created' => date('Y-m-d'),
+            'last_login' => null
+        ];
+
+        $data_update = [
+            'username' => 'updated',
+            'password' => 'pass',
+            'last_login' => date('Y-m-d H:m:s')
+        ];
+        $where = [
+            'id' => 1
+        ];
+
+        // Create
+        $insert = $obj->insert($data_insert);
+        $this->assertEquals(1, $insert);
+
+        // Read
+        $select = $obj->select(['id' => 2]);
+        $this->assertCount(1, $select);
+        $select = $obj->select(['password' => 'pass']);
+        $this->assertCount(4, $select);
+
+        // Update
+        $update = $obj->update($data_update, $where);
+        $this->assertEquals(1, $update);
+        $select = $obj->select(['username' => 'updated']);
+        $this->assertCount(1, $select);
+
+        // Delete
+        $select = $obj->select();
+        $this->assertCount(4, $select);
+        $delete = $obj->delete($where);
+        $this->assertEquals(1, $delete);
+        $select = $obj->select();
+        $this->assertCount(3, $select);
+    }
 
 }

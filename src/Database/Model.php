@@ -157,7 +157,7 @@ class Model implements ModelInterface
     /**
      * Insert data into table/collection
      *
-     * @param   array $data
+     * @param   array $data array of columns and values
      * @return  mixed
      */
     public function insert(array $data)

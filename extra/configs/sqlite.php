@@ -16,4 +16,3 @@ return [
         'path'      => __DIR__ . '/../sqlite.db',
     ],
 ];
-

@@ -1,21 +1,31 @@
 <?xml version="1.0" ?>
 <dataset>
-    <table name="guestbook">
+    <table name="users">
         <column>id</column>
-        <column>content</column>
-        <column>user</column>
+        <column>username</column>
+        <column>password</column>
         <column>created</column>
+        <column>last_login</column>
         <row>
             <value>1</value>
-            <value>Hello buddy!</value>
-            <value>joe</value>
+            <value>admin</value>
+            <value>password</value>
             <value>2010-04-24 17:15:23</value>
+            <value>2010-04-24 18:15:23</value>
         </row>
         <row>
             <value>2</value>
-            <value>I like it!</value>
-            <null/>
-            <value>2010-04-26 12:14:20</value>
+            <value>user1</value>
+            <value>password</value>
+            <value>2010-04-24 17:15:23</value>
+            <value>2010-04-24 18:15:23</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>user2</value>
+            <value>password</value>
+            <value>2010-04-24 17:15:23</value>
+            <value>2010-04-24 18:15:23</value>
         </row>
     </table>
 </dataset>

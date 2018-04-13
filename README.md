@@ -117,6 +117,8 @@ implemented.
 
 ```php
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use \DrMVC\Config;
 use \DrMVC\Database;
 

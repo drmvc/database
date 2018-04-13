@@ -77,28 +77,35 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $config = new \DrMVC\Config();
 $config->load(__DIR__ . '/database.php', 'database');
 
-// Initiate model with collection with what we want work, 'test' for example
-$model = new \DrMVC\Database\Model($config->get('database'), 'test');
+// Initiate model, send database config and table name 'test' (without prefix)
+$model = new \DrMVC\Database\Model($config, 'test');
+
+// Get all records from table
+$select = $model->select();
 
 // Direct call query via model
-$where = ['name' => 'somename', 'email' => 'someemail'];
-$test = $model->select($where);
+$where = ['name' => 'somename', 'email' => 'some@email'];
+$select = $model->select($where);
 
 // Advanced example of select usage
-$bind = ['name' => 'somename', 'email' => 'someemail'];
-$test = $model->rawSQL("SELECT * FROM prefix_users WHERE name = :name AND email = :email", $bind);
+$bind = ['name' => 'somename', 'email' => 'some@email'];
+$raw = $model->rawSQL("SELECT * FROM prefix_users WHERE name = :name AND email = :email", $bind);
 
 // Call insert method
 $data = ['key' => 'value', 'key2' => 'value2'];
-$test = $model->insert($data);
+$insert = $model->insert($data);
 
 // Update some data in table
 $data = ['key' => 'value', 'key2' => 'value2'];
 $where = ['id' => 111];
-$test = $model->update($data, $where);
+$update = $model->update($data, $where);
 
 // Execute query in silent mode
-$model->exec('create table example_table');
+$model->rawSQL('create table example_table');
+
+// Remove some item from table
+$where = ['id' => 111];
+$delete = $model->delete($where);
 ```
 
 ### Simple connect to database
@@ -110,7 +117,6 @@ implemented.
 
 ```php
 <?php
-
 use \DrMVC\Config;
 use \DrMVC\Database;
 

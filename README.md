@@ -185,7 +185,7 @@ class Test extends Model
 }
 ```
 
-# Links
+## Links
 
 * [DrMVC project website](https://drmvc.com/)
 * [PDO MySQL](http://php.net/manual/en/ref.pdo-mysql.connection.php)

@@ -94,6 +94,7 @@ class Mongodb extends NoSQL implements MongodbInterface
         // URL options
         $options = $this->getConfig()->get();
 
+        // TODO: This option should be optional, in addition, it may not be an array
         // Driver options
         $optionsDriver = $options['driver_options']->get();
 

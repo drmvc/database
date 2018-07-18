@@ -1,6 +1,6 @@
 <?php
 
-namespace DrMVC\Database\Drivers;
+namespace DrMVC\Database\Drivers\Interfaces;
 
 use DrMVC\Config\ConfigInterface;
 

@@ -14,6 +14,7 @@ class DatabaseTest extends TestCase
     {
         parent::__construct($name, $data, $dataName);
         $this->config = new Config();
+        $this->config->load(__DIR__ . '/database.php');
         $this->config->load(__DIR__ . '/../extra/configs/sqlite.php');
         $this->config->load(__DIR__ . '/../extra/configs/pgsql.php');
     }
@@ -75,5 +76,46 @@ class DatabaseTest extends TestCase
 
         $this->assertInternalType('string', $driver);
         $this->assertEquals(Sqlite::class, $driver);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testGetDriverEx1()
+    {
+        $config = $this->config->get('wrong_driver_1');
+        $obj = new Database($config);
+        $driver = $obj->getDriver();
+
+        $this->expectException(Exception::class);
+        throw new Exception('Test call of Exception');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testGetDriverEx2()
+    {
+        $config = $this->config->get('wrong_driver_2');
+        $obj = new Database($config);
+        $driver = $obj->getDriver();
+
+        $this->expectException(Exception::class);
+        throw new Exception('Test call of Exception');
+    }
+
+    public function testDisconnect()
+    {
+        $config = $this->config->get('sqlite');
+        $obj = new Database($config);
+        $instance = $obj->getInstance('collection');
+
+        $this->assertInternalType('object', $instance);
+        $this->assertInstanceOf(Sqlite::class, $instance);
+
+        // Close the connection
+        $instance->disconnect();
+        $instance2 = $obj->getInstance();
+        $this->assertInstanceOf(\PDO::class, $instance2);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace DrMVC\Database;
+namespace DrMVC\Database\Interfaces;
 
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\QueryInterface;

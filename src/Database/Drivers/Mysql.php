@@ -2,8 +2,9 @@
 
 namespace DrMVC\Database\Drivers;
 
-use DrMVC\Database\SQLException;
 use PDO;
+use DrMVC\Database\SQLException;
+use DrMVC\Database\Drivers\Interfaces\DriverInterface;
 
 /**
  * Wrapper of PDO for work with MySQL/MariaDB databases

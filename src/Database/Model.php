@@ -3,9 +3,10 @@
 namespace DrMVC\Database;
 
 use DrMVC\Config\ConfigInterface;
-use DrMVC\Database\Drivers\QueryInterface;
-use DrMVC\Database\Drivers\SQLInterface;
-use DrMVC\Database\Drivers\MongodbInterface;
+use DrMVC\Database\Drivers\Interfaces\QueryInterface;
+use DrMVC\Database\Drivers\Interfaces\SQLInterface;
+use DrMVC\Database\Drivers\Interfaces\MongodbInterface;
+use DrMVC\Database\Interfaces\ModelInterface;
 use Stringy\Stringy;
 
 /**
@@ -172,11 +173,12 @@ class Model implements ModelInterface
      * Read data from table/collection
      *
      * @param   array $where
+     * @param   array $nosql_options
      * @return  mixed
      */
-    public function select(array $where = [])
+    public function select(array $where = [], array $nosql_options = [])
     {
-        return $this->getInstance()->select($where);
+        return $this->getInstance()->select($where, $nosql_options);
     }
 
     /**

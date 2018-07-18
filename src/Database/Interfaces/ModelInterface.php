@@ -1,8 +1,8 @@
 <?php
 
-namespace DrMVC\Database;
+namespace DrMVC\Database\Interfaces;
 
-use DrMVC\Database\Drivers\QueryInterface;
+use DrMVC\Database\Drivers\Interfaces\QueryInterface;
 
 interface ModelInterface extends QueryInterface
 {

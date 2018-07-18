@@ -3,6 +3,7 @@
 namespace DrMVC\Database\Drivers;
 
 use DrMVC\Config\ConfigInterface;
+use DrMVC\Database\Drivers\Interfaces\DriverInterface;
 
 /**
  * Abstract class, in which implemented basic logic similar for all database drivers

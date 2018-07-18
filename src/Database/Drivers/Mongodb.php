@@ -13,6 +13,8 @@ use MongoDB\Driver\WriteConcern as MongoWrite;
 use MongoDB\Driver\Command as MongoCommand;
 use MongoDB\Driver\Query as MongoQuery;
 use DrMVC\Database\Exception;
+use DrMVC\Database\Drivers\Interfaces\MongodbInterface;
+use DrMVC\Database\Drivers\Interfaces\DriverInterface;
 
 /**
  * Class for work with modern MongoDB php driver (for PHP >= 7.0 only)

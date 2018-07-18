@@ -2,6 +2,8 @@
 
 namespace DrMVC\Database\Drivers;
 
+use DrMVC\Database\Drivers\Interfaces\DriverInterface;
+use DrMVC\Database\Drivers\Interfaces\SQLInterface;
 use DrMVC\Database\SQLException;
 use PDO;
 
@@ -83,9 +85,10 @@ abstract class SQL extends Driver implements SQLInterface
      * Run a select statement against the database
      *
      * @param   array $where array with data for filtering
+     * @param   array $nosql_options additional options of query (only for mongo)
      * @return  mixed
      */
-    public function select(array $where = [])
+    public function select(array $where = [], array $nosql_options = [])
     {
         // Set statement
         $query = $this->getSelect($where);
@@ -103,7 +106,7 @@ abstract class SQL extends Driver implements SQLInterface
         return $statement->fetchAll(PDO::FETCH_OBJ);
     }
 
-    private function setRawDefauls(array &$arguments)
+    private function setRawDefaults(array &$arguments)
     {
         // Values for bind
         if (!isset($arguments[1])) {
@@ -125,7 +128,7 @@ abstract class SQL extends Driver implements SQLInterface
     public function rawSQL(array $arguments)
     {
         // Small fixes if only query provided
-        $this->setRawDefauls($arguments);
+        $this->setRawDefaults($arguments);
 
         /*
          * @param string $query  pure sql query

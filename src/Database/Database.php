@@ -3,7 +3,8 @@
 namespace DrMVC\Database;
 
 use DrMVC\Config\ConfigInterface;
-use DrMVC\Database\Drivers\QueryInterface;
+use DrMVC\Database\Interfaces\DatabaseInterface;
+use DrMVC\Database\Drivers\Interfaces\QueryInterface;
 use MongoDB\Driver\Manager;
 use PDO;
 

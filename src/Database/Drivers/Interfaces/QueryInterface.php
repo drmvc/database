@@ -1,6 +1,6 @@
 <?php
 
-namespace DrMVC\Database\Drivers;
+namespace DrMVC\Database\Drivers\Interfaces;
 
 interface QueryInterface
 {
@@ -16,9 +16,10 @@ interface QueryInterface
      * Universal select in database
      *
      * @param   array $where array with options for filtering
+     * @param   array $nosql_options additional options of query (only for mongo)
      * @return  mixed
      */
-    public function select(array $where = []);
+    public function select(array $where = [], array $nosql_options = []);
 
     /**
      * Update some data in database

@@ -2,6 +2,8 @@
 
 namespace DrMVC\Database\Interfaces;
 
+use MongoDB\Driver\Manager;
+use PDO;
 use DrMVC\Database\Drivers\Interfaces\QueryInterface;
 
 interface ModelInterface extends QueryInterface
@@ -31,8 +33,8 @@ interface ModelInterface extends QueryInterface
     /**
      * Get database instance
      *
-     * @return QueryInterface
+     * @return  PDO|Manager|QueryInterface
      */
-    public function getInstance(): QueryInterface;
+    public function getInstance();
 
 }

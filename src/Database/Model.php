@@ -2,6 +2,8 @@
 
 namespace DrMVC\Database;
 
+use MongoDB\Driver\Manager;
+use PDO;
 use DrMVC\Config\ConfigInterface;
 use DrMVC\Database\Drivers\Interfaces\QueryInterface;
 use DrMVC\Database\Drivers\Interfaces\SQLInterface;
@@ -26,7 +28,7 @@ class Model implements ModelInterface
 {
     /**
      * Connection with database will be stored here
-     * @var QueryInterface
+     * @var PDO|Manager|QueryInterface
      */
     private $_instance;
 
@@ -141,9 +143,9 @@ class Model implements ModelInterface
     /**
      * Set database instance
      *
-     * @param   QueryInterface $instance
+     * @param   PDO|Manager $instance
      */
-    private function setInstance(QueryInterface $instance)
+    private function setInstance($instance)
     {
         $this->_instance = $instance;
     }
@@ -151,9 +153,9 @@ class Model implements ModelInterface
     /**
      * Get database instance
      *
-     * @return QueryInterface
+     * @return  PDO|Manager|QueryInterface
      */
-    public function getInstance(): QueryInterface
+    public function getInstance()
     {
         return $this->_instance;
     }
